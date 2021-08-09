@@ -21,7 +21,8 @@ typedef struct
 //=============================private variables ============================
 //===========================================================================
 USER_USART_RECEIVE_T user_uart_receive;
-
+static long gcode_N, gcode_LastN;     //wifi
+static char *strchr_pointer;
 //===========================================================================
 //=============================public  function =============================
 //===========================================================================
@@ -45,11 +46,105 @@ void user_uart1_dma_send_data(uint8_t *pdata, uint16_t Length)
   HAL_UART_Transmit_DMA(&huart1, pdata, Length);
 }
 
+static void _user_uart1_flush_serial_request_resend()
+{
+  USER_EchoLogStr("Resend: ");
+  USER_EchoLogStr("%ld\n", gcode_LastN + 1);
+  USER_EchoLogStr("ok\n");
+}
+
+static void _user_uart1_receive_ncode(unsigned char *data)
+{
+  strchr_pointer = strchr((char *)data, 'N');
+  gcode_N = (strtol((const char *)strchr_pointer, NULL, 10));
+
+  if (gcode_N != gcode_LastN + 1 && (strstr((char *)data, (char *)"M110") == NULL))
+  {
+    USER_EchoLogStr("Error:");
+    USER_EchoLogStr("Line Number is not Last Line Number+1, Last Line: ");
+    USER_EchoLogStr("%ld", gcode_LastN);
+    _user_uart1_flush_serial_request_resend();
+    return;
+  }
+
+  if (strchr((const char *)data, '*') != NULL)
+  {
+    UCHAR checksum = 0;
+    UCHAR count = 0;
+
+    while (data[count] != '*')
+    {
+      checksum = checksum ^ data[count++];
+    }
+
+    strchr_pointer = strchr((char *)data, '*');
+
+    if ((UCHAR)(strtod((const char *)strchr_pointer, NULL)) != checksum)
+    {
+      USER_EchoLogStr("Error:");
+      USER_EchoLogStr("checksum mismatch, Last Line: ");
+      USER_EchoLogStr(" checksum: %d\n\r", checksum);
+      count = 0;
+      USER_EchoLogStr(" '");
+
+      while (data[count] != '*')
+      {
+        USER_EchoLogStr("%c", data[count++]);
+      }
+
+      USER_EchoLogStr(" '\n\r ");
+      checksum = 0;
+      count = 0;
+
+      while (data[count] != '*')
+      {
+        USER_EchoLogStr("command_buffer:%d;", data[count]);
+        checksum = checksum ^ data[count++];
+        USER_EchoLogStr(" checksum:%d \n\r", checksum);
+      }
+
+      /// USER_EchoLogStr("\n\r ");
+      USER_EchoLogStr("%ld", gcode_LastN);
+      _user_uart1_flush_serial_request_resend();
+      return;
+    }
+
+    //if no errors, continue parsing
+  }
+  else
+  {
+    USER_EchoLogStr("Error:");
+    USER_EchoLogStr("No Checksum with line number, Last Line: ");
+    USER_EchoLogStr("%ld", gcode_LastN);
+    _user_uart1_flush_serial_request_resend();
+    return;
+  }
+
+  gcode_LastN = gcode_N;
+  //if no errors, continue parsing
+}
+
 __weak void user_uart1_dma_receive_process(unsigned char *data, unsigned short length)
 {
   if (length > 0)
   {
-    USER_EchoLog("Rec:%s;len:%d\n", data, length);
+    //USER_EchoLogStr("Rec:%s;len:%d\n", data, length);
+    if (strchr((const char *)data, 'N') != NULL)
+    {
+      _user_uart1_receive_ncode(data);
+    }
+    else  // if we don't receive 'N' but still see '*'
+    {
+      if ((strchr((char *)data, '*') != NULL))
+      {
+        USER_EchoLogStr("Error:");
+        USER_EchoLogStr("No Line Number with checksum, Last Line: ");
+        USER_EchoLogStr("%ld", gcode_LastN);
+        return;
+      }
+    }
+
+    user_send_str(GCODE_TYPE_UART, (char *)data);
   }
 }
 
@@ -73,6 +168,7 @@ void user_uart1_dma_receive_idle(void)
   if (user_uart_receive.receive_flag) //如果产生了空闲中断
   {
     user_uart1_dma_receive_process(user_uart_receive.usartDMA_rxBuf, user_uart_receive.rx_len);
+    user_uart_receive.receive_flag = 0;
   }
 }
 
