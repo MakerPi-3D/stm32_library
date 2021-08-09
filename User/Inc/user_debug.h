@@ -25,7 +25,7 @@ extern "C" {
 #define  USER_ErrLogStr(...)     printf(__VA_ARGS__);
 #else
 #define  USER_ErrLog(...)
-#define  USER_ErrLogStart()  
+#define  USER_ErrLogStart()
 #define  USER_ErrLogStr(...)
 #endif
 

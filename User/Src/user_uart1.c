@@ -1,9 +1,10 @@
 #include "user_common.h"
 
 #ifdef ENABLE_UART1
-#ifdef ENABLE_UART1_DMA
 
 extern UART_HandleTypeDef huart1;
+
+#ifdef ENABLE_UART1_DMA
 
 #define RECEIVE_LENGTH 96
 #define USART_DMA_SENDING 0//发送未完成
@@ -112,12 +113,12 @@ void _ttywrch(int ch)
 #endif /* __GNUC__ */
 PUTCHAR_PROTOTYPE
 {
-  #if defined(USE_BOOT) || defined(USE_APP1)
+  #if !defined(ENABLE_UART1_DMA)
 
   while ((USART1->SR & 0x40) == 0); //循环发送，直到发送完毕
 
   USART1->DR = (uint8_t)ch; //发送数据
-  #elif defined(USE_APP2)
+  #else
   HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
   #endif
   return ch;

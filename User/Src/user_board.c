@@ -112,13 +112,18 @@ static void board_stm32_gpio_init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-  /*Configure GPIO pin : STM32_SIG_MAT_Pin */
-  GPIO_InitStruct.Pin = STM32_SIG_MAT_Pin;
+  /*Configure GPIO pin : STM32_SIG_MAT_E0_Pin */
+  GPIO_InitStruct.Pin = STM32_SIG_MAT_E0_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(STM32_SIG_MAT_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(STM32_SIG_MAT_E0_GPIO_Port, &GPIO_InitStruct);
+  /*Configure GPIO pin : STM32_SIG_MAT_E1_Pin */
+  GPIO_InitStruct.Pin = STM32_SIG_MAT_E1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(STM32_SIG_MAT_E1_GPIO_Port, &GPIO_InitStruct);
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI3_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 }
 

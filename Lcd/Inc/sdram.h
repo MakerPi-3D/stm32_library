@@ -1,8 +1,6 @@
 #ifndef _SDRAM_H
 #define _SDRAM_H
 
-#include "user_common.h"
-
 #ifdef ENABLE_SDRAM
 
 #ifdef __cplusplus

@@ -1,5 +1,5 @@
-#include "ltdc.h"
-#include "lcd.h"
+#include "../Inc/ltdc.h"
+#include "../Inc/lcd.h"
 #include "user_ltdc.h"
 #include "user_mcu.h"
 

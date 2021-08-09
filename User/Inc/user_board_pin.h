@@ -14,7 +14,7 @@ extern "C" {
 #define USER_GPIO_WRITE(MCU, TYPE, value)   HAL_GPIO_WritePin(MCU##_##TYPE##_GPIO_Port, MCU##_##TYPE##_Pin, value)
 #define USER_GPIO_CTRL(TYPE, isOn) \
   {\
-    GPIO_PinState value = isOn ? GPIO_PIN_SET : GPIO_PIN_RESET;\
+    volatile GPIO_PinState value = isOn ? GPIO_PIN_SET : GPIO_PIN_RESET;\
     if (mcu_id == MCU_GD32F450IIH6) \
     {\
       USER_GPIO_WRITE(GD32, TYPE, value);\
@@ -24,9 +24,9 @@ extern "C" {
       USER_GPIO_WRITE(STM32, TYPE, value);\
     }\
   }
-#define USER_GPIO_GET(TYPE) \
+#define USER_GPIO_GET(TYPE, VALUE) \
   {\
-    GPIO_PinState result = GPIO_PIN_RESET;\
+    volatile GPIO_PinState result = GPIO_PIN_RESET;\
     if (mcu_id == MCU_GD32F450IIH6) \
     {\
       result = USER_GPIO_READ(GD32, TYPE);\
@@ -35,7 +35,7 @@ extern "C" {
     {\
       result = USER_GPIO_READ(STM32, TYPE);\
     }\
-    return result;\
+    return (result == VALUE);\
   }
 
 __inline static void user_pin_light_bar_ctrl(bool isOn) USER_GPIO_CTRL(LIGHT_BAR, isOn)
@@ -45,10 +45,11 @@ __inline static void user_pin_tp_cs_ctrl(bool isOn) USER_GPIO_CTRL(TOUCH_CS, isO
 __inline static void user_pin_tp_mosi_ctrl(bool isOn) USER_GPIO_CTRL(TOUCH_MOSI, isOn)
 __inline static void user_pin_tp_pen_ctrl(bool isOn) USER_GPIO_CTRL(TOUCH_PEN, isOn)
 
-__inline static GPIO_PinState user_pin_tp_pen_read(void) USER_GPIO_GET(TOUCH_PEN)
-__inline static GPIO_PinState user_pin_tp_miso_read(void) USER_GPIO_GET(TOUCH_MISO)
-__inline static GPIO_PinState user_pin_sig_mat_read(void) USER_GPIO_GET(SIG_MAT)
-__inline static GPIO_PinState user_pin_sig_door_read(void) USER_GPIO_GET(SIG_DOOR)
+__inline static bool user_pin_tp_pen_read(void) USER_GPIO_GET(TOUCH_PEN, GPIO_PIN_RESET)
+__inline static bool user_pin_tp_miso_read(void) USER_GPIO_GET(TOUCH_MISO, GPIO_PIN_SET)
+__inline static bool user_pin_sig_mat_e0_read(void) USER_GPIO_GET(SIG_MAT_E0, GPIO_PIN_SET)
+__inline static bool user_pin_sig_mat_e1_read(void) USER_GPIO_GET(SIG_MAT_E1, GPIO_PIN_SET)
+__inline static bool user_pin_sig_door_read(void) USER_GPIO_GET(SIG_DOOR, GPIO_PIN_RESET)
 
 #ifdef __cplusplus
 } //extern "C" {

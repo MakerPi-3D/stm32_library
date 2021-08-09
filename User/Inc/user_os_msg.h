@@ -1,8 +1,6 @@
 #ifndef __USER_OS_MSG_H
 #define __USER_OS_MSG_H
 
-#include "user_common.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

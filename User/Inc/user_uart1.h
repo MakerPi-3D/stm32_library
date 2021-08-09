@@ -1,8 +1,6 @@
 #ifndef USER_UART1_H
 #define USER_UART1_H
 
-#include "user_common.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

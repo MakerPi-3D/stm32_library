@@ -2,13 +2,21 @@
 #define USER_CONFIG_H
 
 #if defined(USE_BOOT)
+  #define ENABLE_IAP
   #define ENABLE_UART1
   #define ENABLE_USB_HOST
 #elif defined(USE_APP1)
+  #define ENABLE_IAP
+  #define ENABLE_LCD
+  #define ENABLE_NAND
   #define ENABLE_UART1
   #define ENABLE_SDRAM
   #define ENABLE_USB_HOST
 #elif defined(USE_APP2)
+  #define ENABLE_USB_DEVICE
+  #define ENABLE_IAP
+  #define ENABLE_LCD
+  #define ENABLE_NAND
   #define ENABLE_FREERTOS
   #define ENABLE_SDRAM
   #define ENABLE_USB_HOST
@@ -16,7 +24,7 @@
   #ifdef ENABLE_UART1
     #define ENABLE_UART1_DMA
   #endif
-
+  #define HAS_FILAMENT_SENSOR
   /**
   * S-Curve Acceleration
   *

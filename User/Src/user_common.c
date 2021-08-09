@@ -59,7 +59,9 @@ void user_init(void)
   delay_init(168);
   SDRAM_Init();
   LCD_Init();//´¥ÃþÆÁ³õÊ¼»¯
+  #ifdef ENABLE_UART1_DMA
   user_uart1_dma_start();
+  #endif
   #endif
 }
 

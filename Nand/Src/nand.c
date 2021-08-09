@@ -1,8 +1,7 @@
-#include "nand.h"
+#include "../Inc/nand.h"
 #include "delay.h"
 #include <stdio.h>
 #include "user_common.h"
-//#include "malloc.h"
 //////////////////////////////////////////////////////////////////////////////////
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32F429开发板

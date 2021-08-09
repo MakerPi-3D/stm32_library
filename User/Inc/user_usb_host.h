@@ -1,8 +1,6 @@
 #ifndef USER_USB_HOST_H
 #define USER_USB_HOST_H
 
-#include "user_common.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

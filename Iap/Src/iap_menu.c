@@ -45,10 +45,10 @@
 ******************************************************************************
 */
 /* Includes ------------------------------------------------------------------*/
-#include "iap_menu.h"
+#include "../Inc/iap_menu.h"
+#include "../Inc/iap_config.h"
+#include "../Inc/iap_param.h"
 #include "user_common.h"
-#include "iap_config.h"
-#include "iap_param.h"
 
 #if defined(USE_BOOT) || defined(USE_APP1)
 
