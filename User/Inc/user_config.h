@@ -1,40 +1,86 @@
 #ifndef USER_CONFIG_H
 #define USER_CONFIG_H
 
-#if defined(USE_BOOT)
-  #define ENABLE_IAP
-  #define ENABLE_UART1
-  #define ENABLE_USB_HOST
-#elif defined(USE_APP1)
-  #define ENABLE_IAP
-  #define ENABLE_LCD
-  #define ENABLE_NAND
-  #define ENABLE_UART1
-  #define ENABLE_SDRAM
-  #define ENABLE_USB_HOST
-#elif defined(USE_APP2)
-  #define ENABLE_USB_DEVICE
-  #define ENABLE_IAP
-  #define ENABLE_LCD
-  #define ENABLE_NAND
-  #define ENABLE_FREERTOS
-  #define ENABLE_SDRAM
-  #define ENABLE_USB_HOST
-  #define ENABLE_UART1
-  #ifdef ENABLE_UART1
-    #define ENABLE_UART1_DMA
+#if defined(STM32F407xx)
+  #if defined(USE_BOOT)
+    #define ENABLE_IAP
+    #define ENABLE_UART1
+    #define ENABLE_USB_HOST
+  #elif defined(USE_APP1)
+    #define ENABLE_IAP
+    #define ENABLE_LCD
+    #define ENABLE_NAND
+    #define ENABLE_UART1
+    #define ENABLE_SDRAM
+    #define ENABLE_USB_HOST
+  #elif defined(USE_APP2)
+    //#define ENABLE_USB_DEVICE
+    #define ENABLE_IAP
+    #define ENABLE_LCD
+    #ifdef ENABLE_LCD
+      #define ENABLE_FSMC
+      #define USE_LCD_SHOW
+    #endif
+    #define ENABLE_NAND
+    #define ENABLE_FREERTOS
+    #define ENABLE_USB_HOST
+    #define ENABLE_UART1
+    #ifdef ENABLE_UART1
+      #define ENABLE_UART1_DMA
+    #endif
+    #define HAS_FILAMENT_SENSOR
+    /**
+    * S-Curve Acceleration
+    *
+    * This option eliminates vibration during printing by fitting a Bézier
+    * curve to move acceleration, producing much smoother direction changes.
+    *
+    * See https://github.com/synthetos/TinyG/wiki/Jerk-Controlled-Motion-Explained
+    */
+    //#define S_CURVE_ACCELERATION
+    //#define CPU_32_BIT
   #endif
-  #define HAS_FILAMENT_SENSOR
-  /**
-  * S-Curve Acceleration
-  *
-  * This option eliminates vibration during printing by fitting a Bézier
-  * curve to move acceleration, producing much smoother direction changes.
-  *
-  * See https://github.com/synthetos/TinyG/wiki/Jerk-Controlled-Motion-Explained
-  */
-  //#define S_CURVE_ACCELERATION
-  //#define CPU_32_BIT
+#elif defined(STM32F429xx)
+  #if defined(USE_BOOT)
+    #define ENABLE_IAP
+    #define ENABLE_UART1
+    #define ENABLE_USB_HOST
+  #elif defined(USE_APP1)
+    #define ENABLE_IAP
+    #define ENABLE_LCD
+    #define ENABLE_NAND
+    #define ENABLE_UART1
+    #define ENABLE_SDRAM
+    #define ENABLE_USB_HOST
+  #elif defined(USE_APP2)
+    #define ENABLE_USB_DEVICE
+    #define ENABLE_IAP
+    #define ENABLE_LCD
+    #ifdef ENABLE_LCD
+      #define ENABLE_LTDC
+      #define USE_LCD_SHOW
+    #endif
+    #define ENABLE_NAND
+    #define ENABLE_FREERTOS
+    #define ENABLE_SDRAM
+    #define ENABLE_USB_HOST
+    #define ENABLE_UART1
+    #ifdef ENABLE_UART1
+      #define ENABLE_UART1_DMA
+    #endif
+    #define HAS_FILAMENT_SENSOR
+    /**
+    * S-Curve Acceleration
+    *
+    * This option eliminates vibration during printing by fitting a Bézier
+    * curve to move acceleration, producing much smoother direction changes.
+    *
+    * See https://github.com/synthetos/TinyG/wiki/Jerk-Controlled-Motion-Explained
+    */
+    //#define S_CURVE_ACCELERATION
+    //#define CPU_32_BIT
+  #endif
+
 #endif
 
 /**

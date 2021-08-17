@@ -1,40 +1,51 @@
-#include "lcd_common.h"
-#include "lcd.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "user_common.h"
+
+#if defined(ENABLE_FSMC)
+
+#include "../Inc/lcd_common.h"
+#include "../Inc/lcd.h"
+#include "../Inc/sys.h"
+
+#ifdef HAL_SRAM_MODULE_ENABLED
+
+//////////////////////////////////////////////////////////////////////////////////
+//-----------------MCU屏 LCD端口定义----------------
+//LCD背光 PB5
+#define LCD_LED     PBout(5)
 
 //LCD地址结构体
 typedef struct
 {
-  UINT16 LCD_REG;
-  UINT16 LCD_RAM;
+  vu16 LCD_REG;
+  vu16 LCD_RAM;
 } LCD_TypeDef;
 
 //使用NOR/SRAM的 Bank1.sector4,地址位HADDR[27,26]=11 A6作为数据命令区分线
 //注意设置时STM32内部会右移一位对其! 111 1110=0X7E
-#define LCD_BASE    ((UINT32)(0x60000000 | 0x007ffffe))
+#define LCD_BASE    ((u32)(0x60000000 | 0x007ffffe))
 #define LCD         ((LCD_TypeDef *) LCD_BASE)
 #define LCD_WR_Reg  (LCD->LCD_REG)
 #define LCD_WR_Data (LCD->LCD_RAM)
+//////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @brief LCD_WR_REG 写寄存器函数
  * @param regval 寄存器值
  */
-void LCD_WR_REG(__IO UINT16 regval)
+void LCD_WR_REG(__IO u16 regval)
 {
-  HAL_SRAM_Write_16b(&hsram1, (UINT32*)&LCD_WR_Reg, (UINT16 *)&regval, 1);
+  regval = regval;  //使用-O2优化的时候,必须插入的延时
+  HAL_SRAM_Write_16b(&hsram1, (u32 *)&LCD_WR_Reg, (u16 *)&regval, 1);
 }
 
 /**
  * @brief LCD_RD_REG 读寄存器函数
  * @param regval 寄存器值
  */
-UINT16 LCD_RD_REG(void)
+u16 LCD_RD_REG(void)
 {
-  __IO UINT16 regval;
-  HAL_SRAM_Read_16b(&hsram1, (UINT32*)&LCD_WR_Reg, (UINT16 *)&regval, 1);
+  __IO u16 regval;
+  HAL_SRAM_Read_16b(&hsram1, (u32 *)&LCD_WR_Reg, (u16 *)&regval, 1);
   return regval;
 }
 
@@ -42,19 +53,20 @@ UINT16 LCD_RD_REG(void)
  * @brief LCD_WR_DATA 写LCD数据
  * @param data 要写入的值
  */
-void LCD_WR_DATA(__IO UINT16 data)
+void LCD_WR_DATA(__IO u16 data)
 {
-  HAL_SRAM_Write_16b(&hsram1, (UINT32*)&LCD_WR_Data, (UINT16 *)&data, 1);
+  data = data;    //使用-O2优化的时候,必须插入的延时
+  HAL_SRAM_Write_16b(&hsram1, (u32 *)&LCD_WR_Data, (u16 *)&data, 1);
 }
 
 /**
  * @brief LCD_RD_DATA 读LCD数据
  * @return 读到的值
  */
-UINT16 LCD_RD_DATA(void)
+u16 LCD_RD_DATA(void)
 {
-  __IO UINT16 ram; //防止被优化
-  HAL_SRAM_Read_16b(&hsram1, (UINT32*)&LCD_WR_Data, (UINT16 *)&ram, 1);
+  __IO u16 ram; //防止被优化
+  HAL_SRAM_Read_16b(&hsram1, (u32 *)&LCD_WR_Data, (u16 *)&ram, 1);
   return ram;
 }
 
@@ -63,7 +75,7 @@ UINT16 LCD_RD_DATA(void)
  * @param LCD_Reg 寄存器地址
  * @param LCD_RegValue 要写入的数据
  */
-void LCD_WriteReg(__IO UINT16 LCD_Reg, __IO UINT16 LCD_RegValue)
+void LCD_WriteReg(__IO u16 LCD_Reg, __IO u16 LCD_RegValue)
 {
   LCD_WR_REG(LCD_Reg);
   LCD_WR_DATA(LCD_RegValue);
@@ -74,7 +86,7 @@ void LCD_WriteReg(__IO UINT16 LCD_Reg, __IO UINT16 LCD_RegValue)
  * @param LCD_Reg 寄存器地址
  * @return 读到的数据
  */
-UINT16 LCD_ReadReg(__IO UINT16 LCD_Reg)
+u16 LCD_ReadReg(__IO u16 LCD_Reg)
 {
   LCD_WR_REG(LCD_Reg);  //写入要读的寄存器序号
   HAL_Delay(1);//delay_us(5);
@@ -93,11 +105,37 @@ void LCD_WriteRAM_Prepare(void)
  * @brief LCD_WriteRAM LCD写GRAM
  * @param RGB_Code 颜色值
  */
-void LCD_WriteRAM(UINT16 RGB_Code)
+void LCD_WriteRAM(u16 RGB_Code)
 {
-  LCD_WR_DATA(RGB_Code);
+  LCD_WR_DATA(RGB_Code);//写十六位GRAM
 }
-#ifdef __cplusplus
-} //extern "C"
+
+/**
+ * @brief LCD_BGR2RGB 从ILI93xx读出的数据为GBR格式，而我们写入的时候为RGB格式。
+ * 通过该函数转换
+ * @param c GBR格式的颜色值
+ * @return RGB格式的颜色值
+ */
+u16 LCD_BGR2RGB(u16 c)
+{
+  u16  r, g, b, rgb;
+  b = (c >> 0) & 0x1f;
+  g = (c >> 5) & 0x3f;
+  r = (c >> 11) & 0x1f;
+  rgb = (u16)((b << 11) + (g << 5) + (r << 0));
+  return (rgb);
+}
+
+/**
+ * @brief opt_delay 当mdk -O1时间优化时需要设置
+ * @param i 延时i
+ */
+void opt_delay(u8 i)
+{
+  while (i--);
+}
+
+#endif
+
 #endif
 

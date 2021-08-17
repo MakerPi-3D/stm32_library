@@ -1,5 +1,6 @@
 #ifndef LCD_COMMON_H
 #define LCD_COMMON_H
+#include "sys.h"
 #include "stm32f4xx_hal.h"
 #include "wbtypes.h"
 #ifdef __cplusplus
@@ -17,8 +18,14 @@ extern "C" {
 #define D2U_L2R  6 //从下到上,从左到右
 #define D2U_R2L  7 //从下到上,从右到左
 
+#if defined(ENABLE_LTDC)
+#define DFT_SCAN_DIR  L2R_U2D  //默认的扫描方向
+#elif defined(ENABLE_FSMC)
 #define DFT_SCAN_DIR  R2L_D2U
+#endif
 
+#if defined(ENABLE_FSMC)
+#ifdef HAL_SRAM_MODULE_ENABLED
 extern SRAM_HandleTypeDef hsram1;
 extern void LCD_WR_REG(__IO UINT16 regval);
 extern void LCD_WR_DATA(__IO UINT16 data);
@@ -27,6 +34,10 @@ extern void LCD_WriteRAM_Prepare(void);
 extern void LCD_WriteReg(__IO UINT16 LCD_Reg, __IO UINT16 LCD_RegValue);
 extern UINT16 LCD_ReadReg(__IO UINT16 LCD_Reg);
 extern UINT16 LCD_RD_REG(void);
+extern u16 LCD_BGR2RGB(u16 c);
+extern void opt_delay(u8 i);
+#endif
+#endif
 
 #ifdef __cplusplus
 } //extern "C"

@@ -1,6 +1,8 @@
 #ifndef USER_BOARD_PIN_H
 #define USER_BOARD_PIN_H
 
+#if defined(STM32F429xx)
+
 /* Includes ------------------------------------------------------------------*/
 #include "user_board.h"
 #include "user_mcu.h"
@@ -53,6 +55,8 @@ __inline static bool user_pin_sig_door_read(void) USER_GPIO_GET(SIG_DOOR, GPIO_P
 
 #ifdef __cplusplus
 } //extern "C" {
+#endif
+
 #endif
 
 #endif /* USER_BOARD_PIN_H */

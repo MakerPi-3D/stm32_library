@@ -1,3 +1,7 @@
+#include "user_common.h"
+
+#ifdef ENABLE_LTDC
+
 #include "../Inc/ltdc.h"
 #include "../Inc/lcd.h"
 #include "user_ltdc.h"
@@ -537,3 +541,5 @@ void HAL_LTDC_MspInit(LTDC_HandleTypeDef *hltdc)
   HAL_GPIO_Init(GPIOI, &GPIO_Initure);
 }
 #endif
+#endif
+

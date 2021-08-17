@@ -1,22 +1,24 @@
-#include "LCD_SSD1963.h"
-#include "lcd_common.h"
+#include "user_common.h"
+
+#include "../Inc/LCD_SSD1963.h"
+#include "../Inc/lcd_common.h"
 #include "user_debug.h"
-#include "lcd.h"
+#include "../Inc/lcd.h"
 
-uint16_t  HDP=479;
-uint16_t  HT=531;
-uint16_t  HPS=43;
-uint16_t  LPS=8;
-uint8_t   HPW=10;
+uint16_t  HDP = 479;
+uint16_t  HT = 531;
+uint16_t  HPS = 43;
+uint16_t  LPS = 8;
+uint8_t   HPW = 10;
 
-uint16_t  VDP=271;
-uint16_t  VT=288;
-uint16_t  VPS=12;
-uint16_t  FPS=4;
-uint8_t   VPW=10;
+uint16_t  VDP = 271;
+uint16_t  VT = 288;
+uint16_t  VPS = 12;
+uint16_t  FPS = 4;
+uint8_t   VPW = 10;
 
 
-void LCD_WR_REG_DATA(int reg,int da)
+void LCD_WR_REG_DATA(int reg, int da)
 {
   LCD_WR_REG(reg);
   LCD_WR_DATA(da);
@@ -27,178 +29,181 @@ uint16_t SSD1963_Get_IC_ID(void)
   uint16_t ic_id = 0;
   LCD_WR_REG(0XA1);
   ic_id = LCD_RD_DATA();//dummy read
-  USER_DbgLog("1: %x  ",ic_id);
-  ic_id = LCD_RD_DATA();//¶Áµ½0X00
-  USER_DbgLog("2: %x  ",ic_id);
+  USER_DbgLog("1: %x  ", ic_id);
+  ic_id = LCD_RD_DATA();//è¯»åˆ°0X00
+  USER_DbgLog("2: %x  ", ic_id);
   ic_id = LCD_RD_DATA();
-  USER_DbgLog("3: %x  ",ic_id);
+  USER_DbgLog("3: %x  ", ic_id);
   ic_id <<= 8;
-  ic_id|=LCD_RD_DATA();
-  USER_DbgLog("4: %x  \r\n",ic_id);
+  ic_id |= LCD_RD_DATA();
+  USER_DbgLog("4: %x  \r\n", ic_id);
   return ic_id;
 }
 /**
  * @name SSD1963_Lcd_SetCursor
- * @brief ÉèÖÃ¹â±êÎ»ÖÃ
- * @param Xpos ºá×ø±ê
- * @param Ypos ×Ý×ø±ê
+ * @brief è®¾ç½®å…‰æ ‡ä½ç½®
+ * @param Xpos æ¨ªåæ ‡
+ * @param Ypos çºµåæ ‡
  */
-void SSD1963_Lcd_SetCursor(unsigned int x1,unsigned int y1,unsigned int x2,unsigned int y2)
+void SSD1963_Lcd_SetCursor(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 {
   LCD_WR_REG(0x002A);//set_column_address,Set the column extent
-  LCD_WR_DATA(x1>>8);
-  LCD_WR_DATA(x1&0x00ff);
-  LCD_WR_DATA(x2>>8);
-  LCD_WR_DATA(x2&0x00ff);
+  LCD_WR_DATA(x1 >> 8);
+  LCD_WR_DATA(x1 & 0x00ff);
+  LCD_WR_DATA(x2 >> 8);
+  LCD_WR_DATA(x2 & 0x00ff);
   LCD_WR_REG(0x002b);//set_page_address,Set the page extent
-  LCD_WR_DATA(y1>>8);
-  LCD_WR_DATA(y1&0x00ff);
-  LCD_WR_DATA(y2>>8);
-  LCD_WR_DATA(y2&0x00ff);
-//	LCD_WR_REG(0x002c);//write_memory_start
+  LCD_WR_DATA(y1 >> 8);
+  LCD_WR_DATA(y1 & 0x00ff);
+  LCD_WR_DATA(y2 >> 8);
+  LCD_WR_DATA(y2 & 0x00ff);
+  //  LCD_WR_REG(0x002c);//write_memory_start
 }
 
-//ÇåÆÁº¯Êý
-//Color:ÒªÇåÆÁµÄÌî³äÉ«
+//æ¸…å±å‡½æ•°
+//Color:è¦æ¸…å±çš„å¡«å……è‰²
 //void LCD_Clear(uint16_t Color)
 //{
-////	uint8_t VH,VL;
-//	uint16_t i,j;
-////	VH=Color>>8;
-////	VL=Color;
-//	SSD1963_Lcd_SetCursor(0,0,LCD_W-1,LCD_H-1);
+////  uint8_t VH,VL;
+//  uint16_t i,j;
+////  VH=Color>>8;
+////  VL=Color;
+//  SSD1963_Lcd_SetCursor(0,0,LCD_W-1,LCD_H-1);
 //    for(i=0;i<LCD_W;i++)
-//	  {
-//	    for (j=0;j<LCD_H;j++)
-//	    {
+//    {
+//      for (j=0;j<LCD_H;j++)
+//      {
 //        LCD_WR_DATA(Color);
-//	    }
+//      }
 
-//	  }
+//    }
 //}
 /**
  * @name SSD1963_Lcd_Fill
- * @brief ÔÚÖ¸¶¨ÇøÓòÌî³äµ¥¸öÑÕÉ«£¬»­Í¼Æ¬£¬»­·½¿éµÈµ÷ÓÃ
- * @param (xsta,ysta)ÆðÊ¼×ø±ê£»
- * @param (xend,yend)½áÊø×ø±ê£»
- * @param  color ÒªÏÔÊ¾µÄÑÕÉ«
+ * @brief åœ¨æŒ‡å®šåŒºåŸŸå¡«å……å•ä¸ªé¢œè‰²ï¼Œç”»å›¾ç‰‡ï¼Œç”»æ–¹å—ç­‰è°ƒç”¨
+ * @param (xsta,ysta)èµ·å§‹åæ ‡ï¼›
+ * @param (xend,yend)ç»“æŸåæ ‡ï¼›
+ * @param  color è¦æ˜¾ç¤ºçš„é¢œè‰²
  */
-void SSD1963_Lcd_Fill(uint16_t xsta,uint16_t ysta,uint16_t xend,uint16_t yend,uint16_t color)
+void SSD1963_Lcd_Fill(uint16_t xsta, uint16_t ysta, uint16_t xend, uint16_t yend, uint16_t color)
 {
-  uint16_t i,j;
-
-  SSD1963_Lcd_SetCursor(xsta,ysta,xend,yend);      //ÉèÖÃ¹â±êÎ»ÖÃ
+  uint16_t i, j;
+  SSD1963_Lcd_SetCursor(xsta, ysta, xend, yend);   //è®¾ç½®å…‰æ ‡ä½ç½®
   LCD_WriteRAM_Prepare();
-  for(i=ysta; i<=yend; i++)
+
+  for (i = ysta; i <= yend; i++)
   {
-    for(j=xsta; j<=xend; j++)
+    for (j = xsta; j <= xend; j++)
     {
       LCD_WR_DATA((uint16_t)color);
     }
   }
-
 }
 /**
  * @name SSD1963_Lcd_Color_Fill
- * @brief ÔÚÖ¸¶¨ÇøÓòÌî³ä¶à¸öÑÕÉ«£¨ÑÕÉ«Êý×é£©£¬»­Ñ¡ÔñÎÄ¼þµÄÍ¼±êÊ±µ÷ÓÃ
- * @param (sx,sy)ÆðÊ¼×ø±ê£»
- * @param (ex,ey)½áÊø×ø±ê£»
- * @param  *color ÒªÌî³äµÄÑÕÉ«Êý×éÖ¸Õë
+ * @brief åœ¨æŒ‡å®šåŒºåŸŸå¡«å……å¤šä¸ªé¢œè‰²ï¼ˆé¢œè‰²æ•°ç»„ï¼‰ï¼Œç”»é€‰æ‹©æ–‡ä»¶çš„å›¾æ ‡æ—¶è°ƒç”¨
+ * @param (sx,sy)èµ·å§‹åæ ‡ï¼›
+ * @param (ex,ey)ç»“æŸåæ ‡ï¼›
+ * @param  *color è¦å¡«å……çš„é¢œè‰²æ•°ç»„æŒ‡é’ˆ
  */
-void SSD1963_Lcd_Color_Fill(uint16_t sx,uint16_t sy,uint16_t ex,uint16_t ey, const uint16_t* color)
+void SSD1963_Lcd_Color_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, const uint16_t *color)
 {
-
   ex -= sx;
   X_1963(sx);
   ex += sx;
   ey -= sy;
   Y_1963(sy);
   ey += sy;
-
-  SSD1963_Lcd_SetCursor(sx,sy,ex,ey);      //ÉèÖÃ¹â±êÎ»ÖÃ
+  SSD1963_Lcd_SetCursor(sx, sy, ex, ey);   //è®¾ç½®å…‰æ ‡ä½ç½®
   LCD_WriteRAM_Prepare();
-  for(int i = 0; i <= (ey - sy + 1)*( ex - sx + 1); i++ )
-    LCD_WR_DATA(color[i]);
 
+  for (int i = 0; i <= (((ey - sy) + 1) * ((ex - sx) + 1)); i++)
+    LCD_WR_DATA(color[i]);
 }
 /**
  * @name SSD1963_Lcd_Scan_Dir
- * @brief ÉèÖÃË¢ÆÁ·½Ïò£¬ÏÔÊ¾·½Ïò
- * @param width  ÏÔÊ¾ÆÁ¿í¶È
- * @param height ÏÔÊ¾ÆÁ¸ß¶È
- * @param Xcmd ÉèÖÃXÖá×ø±êÃüÁî
-          Ycmd ÉèÖÃYÖá×ø±êÃüÁî
-          dir  ·½Ïò²ÎÊý
+ * @brief è®¾ç½®åˆ·å±æ–¹å‘ï¼Œæ˜¾ç¤ºæ–¹å‘
+ * @param width  æ˜¾ç¤ºå±å®½åº¦
+ * @param height æ˜¾ç¤ºå±é«˜åº¦
+ * @param Xcmd è®¾ç½®Xè½´åæ ‡å‘½ä»¤
+          Ycmd è®¾ç½®Yè½´åæ ‡å‘½ä»¤
+          dir  æ–¹å‘å‚æ•°
  */
 void SSD1963_Lcd_Scan_Dir(uint16_t width, uint16_t height, uint16_t Xcmd, uint16_t Ycmd, uint8_t dir)
 {
-  uint16_t regval=0;
-  uint16_t dirreg=0;
+  uint16_t regval = 0;
+  uint16_t dirreg = 0;
 
-  switch(dir)
+  switch (dir)
   {
-  case L2R_U2D://´Ó×óµ½ÓÒ,´ÓÉÏµ½ÏÂ
-    regval|=(0<<7)|(0<<6)|(0<<5);
+  case L2R_U2D://ä»Žå·¦åˆ°å³,ä»Žä¸Šåˆ°ä¸‹
+    regval |= (0 << 7) | (0 << 6) | (0 << 5);
     break;
-  case L2R_D2U://´Ó×óµ½ÓÒ,´ÓÏÂµ½ÉÏ
-    regval|=(1<<7)|(0<<6)|(0<<5);
+
+  case L2R_D2U://ä»Žå·¦åˆ°å³,ä»Žä¸‹åˆ°ä¸Š
+    regval |= (1 << 7) | (0 << 6) | (0 << 5);
     break;
-  case R2L_U2D://´ÓÓÒµ½×ó,´ÓÉÏµ½ÏÂ
-    regval|=(0<<7)|(1<<6)|(0<<5);
+
+  case R2L_U2D://ä»Žå³åˆ°å·¦,ä»Žä¸Šåˆ°ä¸‹
+    regval |= (0 << 7) | (1 << 6) | (0 << 5);
     break;
-  case R2L_D2U://´ÓÓÒµ½×ó,´ÓÏÂµ½ÉÏ
-    regval|=(1<<7)|(1<<6)|(0<<5);
+
+  case R2L_D2U://ä»Žå³åˆ°å·¦,ä»Žä¸‹åˆ°ä¸Š
+    regval |= (1 << 7) | (1 << 6) | (0 << 5);
     break;
-  case U2D_L2R://´ÓÉÏµ½ÏÂ,´Ó×óµ½ÓÒ
-    regval|=(0<<7)|(0<<6)|(1<<5);
+
+  case U2D_L2R://ä»Žä¸Šåˆ°ä¸‹,ä»Žå·¦åˆ°å³
+    regval |= (0 << 7) | (0 << 6) | (1 << 5);
     break;
-  case U2D_R2L://´ÓÉÏµ½ÏÂ,´ÓÓÒµ½×ó
-    regval|=(0<<7)|(1<<6)|(1<<5);
+
+  case U2D_R2L://ä»Žä¸Šåˆ°ä¸‹,ä»Žå³åˆ°å·¦
+    regval |= (0 << 7) | (1 << 6) | (1 << 5);
     break;
-  case D2U_L2R://´ÓÏÂµ½ÉÏ,´Ó×óµ½ÓÒ
-    regval|=(1<<7)|(0<<6)|(1<<5);
+
+  case D2U_L2R://ä»Žä¸‹åˆ°ä¸Š,ä»Žå·¦åˆ°å³
+    regval |= (1 << 7) | (0 << 6) | (1 << 5);
     break;
-  case D2U_R2L://´ÓÏÂµ½ÉÏ,´ÓÓÒµ½×ó
-    regval|=(1<<7)|(1<<6)|(1<<5);
+
+  case D2U_R2L://ä»Žä¸‹åˆ°ä¸Š,ä»Žå³åˆ°å·¦
+    regval |= (1 << 7) | (1 << 6) | (1 << 5);
     break;
   }
 
-  dirreg=0X36;
-//  regval|=0X08;//1963ÐèÒªBGR,ÐÞ¸´24Î»É«ÏÔÊ¾565RGB·´É«µÄÎÊÌâ
+  dirreg = 0X36;
+  //  regval|=0X08;//1963éœ€è¦BGR,ä¿®å¤24ä½è‰²æ˜¾ç¤º565RGBåè‰²çš„é—®é¢˜
   LCD_WR_REG(Xcmd);
   LCD_WR_DATA(0);
   LCD_WR_DATA(0);
-  LCD_WR_DATA((width-1)>>8);
-  LCD_WR_DATA((width-1)&0XFF);
+  LCD_WR_DATA((width - 1) >> 8);
+  LCD_WR_DATA((width - 1) & 0XFF);
   LCD_WR_REG(Ycmd);
   LCD_WR_DATA(0);
   LCD_WR_DATA(0);
-  LCD_WR_DATA((height-1)>>8);
-  LCD_WR_DATA((height-1)&0XFF);
-
-  regval|=1<<12;
-  LCD_WriteReg(dirreg,regval);
+  LCD_WR_DATA((height - 1) >> 8);
+  LCD_WR_DATA((height - 1) & 0XFF);
+  regval |= 1 << 12;
+  LCD_WriteReg(dirreg, regval);
   //USER_EchoLogStr("dirreg=%d\r\n",LCD_ReadReg(dirreg));
 }
 /**
  * @name SSD1963_Lcd_Init
- * @brief ÏÔÊ¾ÆÁ³õÊ¼»¯£¬
-          LCD_WR_REG(0x00E2)±íÊ¾´«ËÍÃüÁî£¬²ÎÊýÊÇµØÖ·Ò²ÊÇ¼Ä´æÆ÷µØÖ·
-          LCD_WR_DATA(0x002d)±íÊ¾Ð´ÈëÊý¾Ý£¬ÏêÇé¿´SSD1963µÄÊý¾ÝÊÖ²á
+ * @brief æ˜¾ç¤ºå±åˆå§‹åŒ–ï¼Œ
+          LCD_WR_REG(0x00E2)è¡¨ç¤ºä¼ é€å‘½ä»¤ï¼Œå‚æ•°æ˜¯åœ°å€ä¹Ÿæ˜¯å¯„å­˜å™¨åœ°å€
+          LCD_WR_DATA(0x002d)è¡¨ç¤ºå†™å…¥æ•°æ®ï¼Œè¯¦æƒ…çœ‹SSD1963çš„æ•°æ®æ‰‹å†Œ
  * @param None
 
  */
 void SSD1963_Lcd_Init(void)
 {
-  // ¸´Î»£¬·ÀÖ¹°×ÆÁ·¢Éú
+  // å¤ä½ï¼Œé˜²æ­¢ç™½å±å‘ç”Ÿ
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
   HAL_Delay(50);
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
   HAL_Delay(100);
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
   HAL_Delay(50);
-  LCD_WR_REG(0x00E2);	//PLL multiplier, set PLL clock to 120M
-  LCD_WR_DATA(0x002d);	    //N=0x36 for 6.5M, 0x23 for 10M crystal
+  LCD_WR_REG(0x00E2); //PLL multiplier, set PLL clock to 120M
+  LCD_WR_DATA(0x002d);      //N=0x36 for 6.5M, 0x23 for 10M crystal
   LCD_WR_DATA(0x0002);
   LCD_WR_DATA(0x0004);
   LCD_WR_REG(0x00E0);  // PLL enable
@@ -209,52 +214,42 @@ void SSD1963_Lcd_Init(void)
   HAL_Delay(5);//5ms
   LCD_WR_REG(0x0001);  // software reset
   HAL_Delay(5);//5ms
-  LCD_WR_REG(0x00E6);	//PLL setting for PCLK, depends on resolution,Ôö´óÆµÂÊ¿ÉÒÔ¸ÄÉÆÆÁÄ»ÉÁË¸µÄÎÊÌâ
+  LCD_WR_REG(0x00E6); //PLL setting for PCLK, depends on resolution,å¢žå¤§é¢‘çŽ‡å¯ä»¥æ”¹å–„å±å¹•é—ªçƒçš„é—®é¢˜
   LCD_WR_DATA(0x0001);
   LCD_WR_DATA(0x00ff);
   LCD_WR_DATA(0x00be);
-
-  LCD_WR_REG(0x00B0);	//LCD SPECIFICATION
+  LCD_WR_REG(0x00B0); //LCD SPECIFICATION
   LCD_WR_DATA(0x0020);//Set TFT panel data width 24bit
   LCD_WR_DATA(0x0000);//Set LCD panel mode:Hsync+Vsync +DE mode;Set TFT type:TFT mode
-  LCD_WR_DATA((HDP>>8)&0X00FF);  //Set Width
-  LCD_WR_DATA(HDP&0X00FF);
-  LCD_WR_DATA((VDP>>8)&0X00FF);  //Set Height
-  LCD_WR_DATA(VDP&0X00FF);
+  LCD_WR_DATA((HDP >> 8) & 0X00FF); //Set Width
+  LCD_WR_DATA(HDP & 0X00FF);
+  LCD_WR_DATA((VDP >> 8) & 0X00FF); //Set Height
+  LCD_WR_DATA(VDP & 0X00FF);
   LCD_WR_DATA(0x0000);//Set RGB sequence:RGB(000000)
   HAL_Delay(5);//5ms
-  LCD_WR_REG(0x00B4);	//HSYNC
-  LCD_WR_DATA((HT>>8)&0X00FF);  //Set HT
-  LCD_WR_DATA(HT&0X00FF);
-  LCD_WR_DATA((HPS>>8)&0X00FF);  //Set HPS
-  LCD_WR_DATA(HPS&0X00FF);
-  LCD_WR_DATA(HPW);			   //Set HPW
-  LCD_WR_DATA((LPS>>8)&0X00FF);  //SetLPS
-  LCD_WR_DATA(LPS&0X00FF);
+  LCD_WR_REG(0x00B4); //HSYNC
+  LCD_WR_DATA((HT >> 8) & 0X00FF); //Set HT
+  LCD_WR_DATA(HT & 0X00FF);
+  LCD_WR_DATA((HPS >> 8) & 0X00FF); //Set HPS
+  LCD_WR_DATA(HPS & 0X00FF);
+  LCD_WR_DATA(HPW);        //Set HPW
+  LCD_WR_DATA((LPS >> 8) & 0X00FF); //SetLPS
+  LCD_WR_DATA(LPS & 0X00FF);
   LCD_WR_DATA(0x0000);
-
-  LCD_WR_REG(0x00B6);	//VSYNC
-  LCD_WR_DATA((VT>>8)&0X00FF);   //Set VT
-  LCD_WR_DATA(VT&0X00FF);
-  LCD_WR_DATA((VPS>>8)&0X00FF);  //Set VPS
-  LCD_WR_DATA(VPS&0X00FF);
-  LCD_WR_DATA(VPW);			   //Set VPW
-  LCD_WR_DATA((FPS>>8)&0X00FF);  //Set FPS
-  LCD_WR_DATA(FPS&0X00FF);
-
-
+  LCD_WR_REG(0x00B6); //VSYNC
+  LCD_WR_DATA((VT >> 8) & 0X00FF); //Set VT
+  LCD_WR_DATA(VT & 0X00FF);
+  LCD_WR_DATA((VPS >> 8) & 0X00FF); //Set VPS
+  LCD_WR_DATA(VPS & 0X00FF);
+  LCD_WR_DATA(VPW);        //Set VPW
+  LCD_WR_DATA((FPS >> 8) & 0X00FF); //Set FPS
+  LCD_WR_DATA(FPS & 0X00FF);
   LCD_WR_REG(0x0036); //rotation
   LCD_WR_DATA(0x0000);
-
   LCD_WR_REG(0x00F0); //Set pixel data interface
   LCD_WR_DATA(0x0003);//Set the pixel data format to 16bits(565)
-
-
   HAL_Delay(5);//5ms
-
-
   LCD_WR_REG(0x0029); //display on
-
   LCD_WR_REG(0x00BE); //set PWM for B/L
   LCD_WR_DATA(0x0006);
   LCD_WR_DATA(0x00f0);
@@ -262,15 +257,12 @@ void SSD1963_Lcd_Init(void)
   LCD_WR_DATA(0x00f0);
   LCD_WR_DATA(0x0000);
   LCD_WR_DATA(0x0000);
-
   LCD_WR_REG(0x00d0);
   LCD_WR_DATA(0x000d);
-
   //----------LCD RESET---GPIO0-------------------//
   LCD_WR_REG(0x00B8);
   LCD_WR_DATA(0x0000);    //GPIO3=input, GPIO[2:0]=output
   LCD_WR_DATA(0x0001);    //GPIO0 normal
-
   LCD_WR_REG(0x00BA);
   LCD_WR_DATA(0x0000);
 }
