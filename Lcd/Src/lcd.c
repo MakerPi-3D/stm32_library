@@ -41,9 +41,10 @@ void LCD_Init_5510(void);
 void LCD_Init_1963(void);
 
 #ifdef USE_LCD_SHOW
-  static UINT32 LCD_Pow(UINT8 m, UINT8 n);
+  static u32 LCD_Pow(u8 m, u8 n);
 #endif
 
+#if defined(ENABLE_FSMC)
 uint16_t Get_SSD_Value(uint16_t CMD)
 {
   LCD_WR_REG(CMD);
@@ -157,6 +158,7 @@ static void LCD_Get_IC_ID(void)
     }
   }
 }
+#endif
 
 //初始化lcd
 //该初始化函数可以初始化各种型号的LCD(详见本.c文件最前面的描述)
@@ -248,7 +250,7 @@ void LCD_Init(void)
   }
 
   LCD_Display_Dir(1);   //默认为竖屏
-  LCD_LED = 1;      //点亮背光
+  user_pin_lcd_backlight_ctrl(true);      //点亮背光
   LCD_Clear(BLACK);
   #endif
 }
@@ -257,6 +259,7 @@ void LCD_Init(void)
 //lcd型号：NT35310
 void LCD_ReInit(void)
 {
+  #if defined(ENABLE_FSMC)
   LCD_Get_IC_ID(); //读id
 
   //  USER_DbgLog("LCD IC ID::0x%04x\n",lcddev.id);
@@ -283,6 +286,7 @@ void LCD_ReInit(void)
   }
 
   LCD_Display_Dir(1);//横屏
+  #endif
 }
 
 /**
@@ -329,8 +333,6 @@ void LCD_DisplayOff(void)
   void LCD_Clear(u16 color)
 #endif
 {
-  u32 index = 0;
-  u32 totalpoint = lcddev.width;
   #if defined(ENABLE_LTDC)
 
   if (lcdltdc.pwidth != 0) //如果是RGB屏
@@ -339,6 +341,8 @@ void LCD_DisplayOff(void)
   }
 
   #elif defined(ENABLE_FSMC)
+  u32 index = 0;
+  u32 totalpoint = lcddev.width;
   totalpoint *= lcddev.height;    //得到总点数
 
   if ((lcddev.id == 0X6804) && (lcddev.dir == 1)) //6804横屏的时候特殊处理
@@ -387,6 +391,8 @@ void LCD_DisplayOff(void)
  */
 void LCD_SetCursor(u16 Xpos, u16 Ypos)
 {
+  #if defined(ENABLE_FSMC)
+
   if (lcddev.id == 0X9341 || lcddev.id == 0X5310)
   {
     LCD_WR_REG(lcddev.setxcmd);
@@ -450,6 +456,8 @@ void LCD_SetCursor(u16 Xpos, u16 Ypos)
     LCD_WR_REG(lcddev.setycmd + 1);
     LCD_WR_DATA(Ypos & 0XFF);
   }
+
+  #endif
 }
 
 /**
@@ -613,6 +621,10 @@ void LCD_DrawPoint(u16 x, u16 y)
   if (lcdltdc.pwidth != 0)          //如果是RGB屏
   {
     return LTDC_Read_Point(x, y);
+  }
+  else
+  {
+    return 0; //超过了范围,直接返回
   }
 
   #endif
@@ -1079,6 +1091,7 @@ void LCD_ShowString(u16 x, u16 y, u16 width, u16 height, u8 size, u8 *p)
 }
 #endif
 
+#if defined(ENABLE_FSMC)
 /**
  * @brief LCD_Scan_Dir 设置LCD的自动扫描方向
  * 注意:其他函数可能会受到此函数设置的影响(尤其是9341/6804这两个奇葩),
@@ -1245,7 +1258,7 @@ void LCD_Scan_Dir(u8 dir)
     SSD1963_Lcd_Scan_Dir(lcddev.width, lcddev.height, lcddev.setxcmd, lcddev.setycmd, dir);
   }
 }
-
+#endif
 
 
 /**

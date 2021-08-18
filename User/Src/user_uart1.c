@@ -69,8 +69,8 @@ static void _user_uart1_receive_ncode(unsigned char *data)
 
   if (strchr((const char *)data, '*') != NULL)
   {
-    UCHAR checksum = 0;
-    UCHAR count = 0;
+    uint8_t checksum = 0;
+    uint8_t count = 0;
 
     while (data[count] != '*')
     {
@@ -79,7 +79,7 @@ static void _user_uart1_receive_ncode(unsigned char *data)
 
     strchr_pointer = strchr((char *)data, '*');
 
-    if ((UCHAR)(strtod((const char *)strchr_pointer, NULL)) != checksum)
+    if ((uint8_t)(strtod((const char *)strchr_pointer, NULL)) != checksum)
     {
       USER_EchoLogStr("Error:");
       USER_EchoLogStr("checksum mismatch, Last Line: ");

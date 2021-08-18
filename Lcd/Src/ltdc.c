@@ -497,7 +497,7 @@ void LTDC_Init(void)
   LTDC_Layer_Window_Config(0, 0, 0, lcdltdc.pwidth, lcdltdc.pheight); //层窗口配置,以LCD面板坐标系为基准,不要随便修改!
   LTDC_Display_Dir(1);      //默认竖屏
   LTDC_Select_Layer(0);       //选择第1层
-  LCD_LED = 1;                  //点亮背光
+  user_pin_lcd_backlight_ctrl(true);                  //点亮背光
   LTDC_Clear(0XFFFFFFFF);     //清屏
 }
 
