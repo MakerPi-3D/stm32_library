@@ -56,6 +56,7 @@ void user_init(void)
   }
 
   #elif defined(USE_APP2)
+  user_os_init();
   delay_init(168);
   SDRAM_Init();
   LCD_Init();//´¥ÃþÆÁ³õÊ¼»¯

@@ -23,6 +23,9 @@
     #endif
     #define ENABLE_NAND
     #define ENABLE_FREERTOS
+    #ifdef ENABLE_FREERTOS
+      //#define ENABLE_OS_POOL
+    #endif
     #define ENABLE_USB_HOST
     #define ENABLE_UART1
     #ifdef ENABLE_UART1
@@ -62,6 +65,9 @@
     #endif
     #define ENABLE_NAND
     #define ENABLE_FREERTOS
+    #ifdef ENABLE_FREERTOS
+      //#define ENABLE_OS_POOL
+    #endif
     #define ENABLE_SDRAM
     #define ENABLE_USB_HOST
     #define ENABLE_UART1
