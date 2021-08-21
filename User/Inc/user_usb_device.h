@@ -7,9 +7,6 @@ extern "C" {
 
 #ifdef ENABLE_USB_DEVICE
 
-#define TRANS_FILE_BUF_SIZE (65536)  //64K
-extern volatile uint8_t trans_file_bufs[TRANS_FILE_BUF_SIZE];
-
 typedef struct
 {
   uint8_t IsM35Order;  //是否是M35获取状态命令

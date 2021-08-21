@@ -103,6 +103,12 @@ static void LCD_Get_IC_ID(void)
 
       printf(" LCD ID:%x\r\n", lcddev.id); //打印LCD ID
   */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+  HAL_Delay(50);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+  HAL_Delay(100);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+  HAL_Delay(50);
   HAL_Delay(50); // delay 50 ms
   LCD_WriteReg(0x0000, 0x0001);
   HAL_Delay(50); // delay 50 ms

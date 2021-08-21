@@ -14,7 +14,7 @@
     #define ENABLE_SDRAM
     #define ENABLE_USB_HOST
   #elif defined(USE_APP2)
-    //#define ENABLE_USB_DEVICE
+    #define ENABLE_USB_DEVICE
     #define ENABLE_IAP
     #define ENABLE_LCD
     #ifdef ENABLE_LCD

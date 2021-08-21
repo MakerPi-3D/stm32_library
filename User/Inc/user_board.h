@@ -1,6 +1,8 @@
 #ifndef USER_BOARD_H
 #define USER_BOARD_H
 
+#if defined(STM32F429xx)
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "fatfs.h"
@@ -99,6 +101,8 @@
 #define STM32_FAN_NOZ_E_GPIO_Port GPIOB
 #define STM32_Y_DIR_Pin GPIO_PIN_10
 #define STM32_Y_DIR_GPIO_Port GPIOB
+
+#endif
 
 #ifdef __cplusplus
 extern "C" {
