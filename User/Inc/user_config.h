@@ -25,6 +25,8 @@
     #define ENABLE_FREERTOS
     #ifdef ENABLE_FREERTOS
       //#define ENABLE_OS_POOL
+      //#define PRINT_TASK_LIST
+      //#define PRINT_TASK_HIGH_WATER_MARK
     #endif
     #define ENABLE_USB_HOST
     #define ENABLE_UART1

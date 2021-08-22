@@ -15,7 +15,7 @@ extern "C" {
   extern void user_send_internal_cmd(const char *msg);
   extern void user_send_file_cmd(const char *msg, uint32_t file_pos, long layer_count, long current_layer);
   extern void user_clear_queue_str(void);
-  extern void user_os_print_task_remaining_space(void);
+  extern void user_os_print_task_info(void);
 
   #ifdef ENABLE_OS_POOL
     #define GCODE_BUFFER_MAX_SIZE (96)

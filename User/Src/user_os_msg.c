@@ -102,33 +102,78 @@ void user_clear_queue_str(void)
   }
 }
 
-void user_os_print_task_remaining_space(void)
+#ifdef PRINT_TASK_LIST
+
+#ifdef configUSE_TRACE_FACILITY
+  #undef configUSE_TRACE_FACILITY
+  #define configUSE_TRACE_FACILITY 1
+#endif
+
+#ifdef configUSE_STATS_FORMATTING_FUNCTIONS
+  #undef configUSE_STATS_FORMATTING_FUNCTIONS
+  #define configUSE_STATS_FORMATTING_FUNCTIONS 1
+#endif
+
+uint8_t pcWriteBuffer[500];
+void _user_os_print_task_list(void)
+{
+  vTaskList((char *)&pcWriteBuffer);
+  USER_EchoLogStr("task_name   task_state  priority   stack  tasK_num\r\n");
+  USER_EchoLogStr("%s\r\n", pcWriteBuffer);
+  vTaskDelete(NULL);
+}
+
+#endif
+
+
+
+#ifdef PRINT_TASK_HIGH_WATER_MARK
+
+#ifdef INCLUDE_uxTaskGetStackHighWaterMark
+  #undef INCLUDE_uxTaskGetStackHighWaterMark
+  #define INCLUDE_uxTaskGetStackHighWaterMark 1
+#endif
+
+extern osThreadId InitTaskHandle;
+extern osThreadId RefDataTaskHandle;
+extern osThreadId ReadUdiskTaskHandle;
+extern osThreadId PrintTaskHandle;
+extern osThreadId GUITaskHandle;
+extern osThreadId RespondGUITaskHandle;
+extern USBH_HandleTypeDef hUsbHostFS;
+
+void _user_os_print_task_high_water_mark(void)
+{
+  int uxHighWaterMark = uxTaskGetStackHighWaterMark(InitTaskHandle);
+  USER_EchoLogStr("\r\nInitTaskHandle remaining space: %d\r\n", uxHighWaterMark);
+  uxHighWaterMark = uxTaskGetStackHighWaterMark(RefDataTaskHandle);
+  USER_EchoLogStr("\r\nRefDataTaskHandle remaining space: %d\r\n", uxHighWaterMark);
+  uxHighWaterMark = uxTaskGetStackHighWaterMark(ReadUdiskTaskHandle);
+  USER_EchoLogStr("\r\nReadUdiskTaskHandle remaining space: %d\r\n", uxHighWaterMark);
+  uxHighWaterMark = uxTaskGetStackHighWaterMark(PrintTaskHandle);
+  USER_EchoLogStr("\r\nPrintTaskHandle remaining space: %d\r\n", uxHighWaterMark);
+  uxHighWaterMark = uxTaskGetStackHighWaterMark(GUITaskHandle);
+  USER_EchoLogStr("\r\nGUITaskHandle remaining space: %d\r\n", uxHighWaterMark);
+  uxHighWaterMark = uxTaskGetStackHighWaterMark(RespondGUITaskHandle);
+  USER_EchoLogStr("\r\nRespondGUITaskHandle remaining space: %d\r\n", uxHighWaterMark);
+  uxHighWaterMark = uxTaskGetStackHighWaterMark(hUsbHostFS.thread);
+  USER_EchoLogStr("\r\nUSBH_Thread remaining space: %d\r\n", uxHighWaterMark);
+}
+
+#endif
+
+void user_os_print_task_info(void)
 {
   static unsigned long RefreshGuiTimeOut = 0;
-  extern osThreadId InitTaskHandle;
-  extern osThreadId RefDataTaskHandle;
-  extern osThreadId ReadUdiskTaskHandle;
-  extern osThreadId PrintTaskHandle;
-  extern osThreadId GUITaskHandle;
-  extern osThreadId RespondGUITaskHandle;
-  extern USBH_HandleTypeDef hUsbHostFS;
 
   if (RefreshGuiTimeOut < xTaskGetTickCount())
   {
-    int uxHighWaterMark = uxTaskGetStackHighWaterMark(InitTaskHandle);
-    printf("\r\nInitTaskHandle remaining space: %d\r\n", uxHighWaterMark);
-    uxHighWaterMark = uxTaskGetStackHighWaterMark(RefDataTaskHandle);
-    printf("\r\nRefDataTaskHandle remaining space: %d\r\n", uxHighWaterMark);
-    uxHighWaterMark = uxTaskGetStackHighWaterMark(ReadUdiskTaskHandle);
-    printf("\r\nReadUdiskTaskHandle remaining space: %d\r\n", uxHighWaterMark);
-    uxHighWaterMark = uxTaskGetStackHighWaterMark(PrintTaskHandle);
-    printf("\r\nPrintTaskHandle remaining space: %d\r\n", uxHighWaterMark);
-    uxHighWaterMark = uxTaskGetStackHighWaterMark(GUITaskHandle);
-    printf("\r\nGUITaskHandle remaining space: %d\r\n", uxHighWaterMark);
-    uxHighWaterMark = uxTaskGetStackHighWaterMark(RespondGUITaskHandle);
-    printf("\r\nRespondGUITaskHandle remaining space: %d\r\n", uxHighWaterMark);
-    uxHighWaterMark = uxTaskGetStackHighWaterMark(hUsbHostFS.thread);
-    printf("\r\nUSBH_Thread remaining space: %d\r\n", uxHighWaterMark);
+    #ifdef PRINT_TASK_LIST
+    _user_os_print_task_list();
+    #endif
+    #ifdef PRINT_TASK_HIGH_WATER_MARK
+    _user_os_print_task_high_water_mark();
+    #endif
     RefreshGuiTimeOut = xTaskGetTickCount() + 5000;
   }
 }
