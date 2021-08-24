@@ -1,6 +1,8 @@
 #ifndef __FONT_H
 #define __FONT_H
 
+#ifdef ENABLE_LCD
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -24,6 +26,8 @@ extern const unsigned char asc2_2412[95][36];
 
 #ifdef __cplusplus
 }//extern "C" {
+#endif
+
 #endif
 
 #endif

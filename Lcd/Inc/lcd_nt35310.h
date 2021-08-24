@@ -5,7 +5,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern void NT35310_Lcd_Init(void);
 extern void NT35310_Fsmc_ReInit(void);
 extern UINT16 NT35310_Get_IC_ID(void);
 extern void NT35310_Lcd_Color_Fill(UINT16 Xcmd, UINT16 Ycmd, UINT16 sx, UINT16 sy, UINT16 ex, UINT16 ey, const UINT16 *color);

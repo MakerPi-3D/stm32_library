@@ -120,7 +120,7 @@ void _user_os_print_task_list(void)
   vTaskList((char *)&pcWriteBuffer);
   USER_EchoLogStr("task_name   task_state  priority   stack  tasK_num\r\n");
   USER_EchoLogStr("%s\r\n", pcWriteBuffer);
-  vTaskDelete(NULL);
+  //  vTaskDelete(NULL);
 }
 
 #endif

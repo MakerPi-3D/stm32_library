@@ -1,8 +1,9 @@
 #include "user_common.h"
 
+#ifdef ENABLE_LCD
+
 #include "../Inc/LCD_SSD1963.h"
 #include "../Inc/lcd_common.h"
-#include "user_debug.h"
 #include "../Inc/lcd.h"
 
 uint16_t  HDP = 479;
@@ -266,4 +267,6 @@ void SSD1963_Lcd_Init(void)
   LCD_WR_REG(0x00BA);
   LCD_WR_DATA(0x0000);
 }
+
+#endif
 

@@ -1,6 +1,5 @@
 #ifndef LCD_COMMON_H
 #define LCD_COMMON_H
-#include "sys.h"
 #include "stm32f4xx_hal.h"
 #include "wbtypes.h"
 #ifdef __cplusplus

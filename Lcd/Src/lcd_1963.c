@@ -1,9 +1,10 @@
 #include "user_common.h"
 
+#ifdef ENABLE_LCD
+
 #if defined(ENABLE_FSMC)
 
 #include "../Inc/lcd_common.h"
-#include "delay.h"
 
 #ifdef HAL_SRAM_MODULE_ENABLED
 
@@ -43,15 +44,15 @@ void LCD_Init_1963(void)
   LCD_WR_DATA(0x1D);    //参数1
   LCD_WR_DATA(0x02);    //参数2 Divider M = 2, PLL = 300/(M+1) = 100MHz
   LCD_WR_DATA(0x04);    //参数3 Validate M and N values
-  delay_us(100);
+  user_delay_us(100);
   LCD_WR_REG(0xE0);   // Start PLL command
   LCD_WR_DATA(0x01);    // enable PLL
-  delay_ms(10);
+  user_delay_ms(10);
   LCD_WR_REG(0xE0);   // Start PLL command again
   LCD_WR_DATA(0x03);    // now, use PLL output as system clock
-  delay_ms(12);
+  user_delay_ms(12);
   LCD_WR_REG(0x01);   //软复位
-  delay_ms(10);
+  user_delay_ms(10);
   LCD_WR_REG(0xE6);   //设置像素频率,33Mhz
   LCD_WR_DATA(0x2F);
   LCD_WR_DATA(0xFF);
@@ -104,4 +105,4 @@ void LCD_Init_1963(void)
 
 #endif
 #endif
-
+#endif

@@ -1,9 +1,10 @@
 #include "user_common.h"
 
+#ifdef ENABLE_LCD
+
 #if defined(ENABLE_FSMC)
 
 #include "../Inc/lcd_common.h"
-#include "delay.h"
 
 #ifdef HAL_SRAM_MODULE_ENABLED
 
@@ -99,11 +100,11 @@ void LCD_Init_9341(void)
   LCD_WR_DATA(0x00);
   LCD_WR_DATA(0xef);
   LCD_WR_REG(0x11); //Exit Sleep
-  delay_ms(120);
+  user_delay_ms(120);
   LCD_WR_REG(0x29); //display on
 }
 
 #endif
 #endif
-
+#endif
 

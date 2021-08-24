@@ -1,5 +1,7 @@
 #include "user_common.h"
 
+#ifdef ENABLE_LCD
+
 #if defined(ENABLE_FSMC)
   #include "../Inc/lcd_common.h"
   #include "../Inc/lcd_nt35310.h"
@@ -12,7 +14,6 @@
 
 #include "../Inc/lcd.h"
 #include "../Inc/font.h"
-#include "delay.h"
 
 #include "sysconfig_data.h"
 #include "config_model_tables.h"
@@ -230,7 +231,7 @@ void LCD_Init(void)
   if (lcddev.id == NT35310_ID)
   {
     NT35310_Fsmc_ReInit();
-    NT35310_Lcd_Init();
+    LCD_Init_5310();
   }
   else if (lcddev.id == ILI9488_ID)
   {
@@ -284,7 +285,7 @@ void LCD_ReInit(void)
 
   if (lcddev.id == NT35310_ID)
   {
-    NT35310_Lcd_Init();
+    LCD_Init_5310();
   }
   else if (lcddev.id == ILI9488_ID)
   {
@@ -1531,6 +1532,6 @@ void LCD_Set_Window(u16 sx, u16 sy, u16 width, u16 height)
   #endif
 }
 
-
+#endif
 
 

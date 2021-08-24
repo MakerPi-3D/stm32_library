@@ -44,7 +44,7 @@ bool user_unmount_Udisk(void)
     return true;
   }
 
-  if (f_mount(NULL, (TCHAR const *)USBHPath, 0) == FR_OK)
+  if (f_mount(NULL, (const char *)USBHPath, 0) == FR_OK)
   {
     USER_EchoLog("user_unmount_Udisk ok!");
     is_usb_mount = false;
@@ -75,7 +75,7 @@ void user_usb_host_update_status(void)
       return;
     }
 
-    if (f_mount(&USBHFatFS, (TCHAR const *)USBHPath, 1) == FR_OK)
+    if (f_mount(&USBHFatFS, (const char *)USBHPath, 1) == FR_OK)
     {
       Last_Appli_state = APPLICATION_READY;
       usb_host_status = USER_USB_HOST_MOUNT;
@@ -91,7 +91,7 @@ void user_usb_host_update_status(void)
       return;
     }
 
-    if (f_mount(NULL, (TCHAR const *)USBHPath, 1) == FR_OK)
+    if (f_mount(NULL, (const char *)USBHPath, 1) == FR_OK)
     {
       Last_Appli_state = APPLICATION_DISCONNECT;
       usb_host_status = USER_USB_HOST_UNMOUNT;

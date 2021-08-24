@@ -1,10 +1,11 @@
 #include "user_common.h"
 
+#ifdef ENABLE_LCD
+
 #if defined(ENABLE_FSMC)
 
 #include "../Inc/lcd_common.h"
 #include "../Inc/lcd.h"
-#include "../Inc/sys.h"
 
 #ifdef HAL_SRAM_MODULE_ENABLED
 
@@ -136,6 +137,6 @@ void opt_delay(u8 i)
 }
 
 #endif
-
+#endif
 #endif
 

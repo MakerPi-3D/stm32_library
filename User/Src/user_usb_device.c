@@ -188,20 +188,21 @@ void user_usb_device_receive_prepare_cmd(void)
 
 void user_usb_device_trans_file_err(void)
 {
-#if defined(STM32F407xx)
+  #if defined(STM32F407xx)
+
   if (1 == t_gui_p.IsTransFile) //正在传输文件
-#elif defined(STM32F429xx)
+  #elif defined(STM32F429xx)
   if (1 == IsTransFile) //正在传输文件
-#endif
+  #endif
   {
     if (TransFileTimeOut < xTaskGetTickCount()) //若传输中途超时，则主动中断此次传输
     {
       USER_EchoLog("Virtual serial port ==>> Tran file timeout! Packet loss:%ld\n", transFileStatus.FileSize - total_write_byte);
-#if defined(STM32F407xx)
+      #if defined(STM32F407xx)
       t_gui_p.IsTransFile = 0; //GUI标志位重置
-#elif defined(STM32F429xx)
+      #elif defined(STM32F429xx)
       IsTransFile = 0; //GUI标志位重置
-#endif
+      #endif
       _user_usb_device_reset_variable(); //变量重置
 
       if (transFileStatus.IsTaskCritical)

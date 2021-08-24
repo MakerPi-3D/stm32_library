@@ -1,12 +1,9 @@
 #include "user_common.h"
 
+#ifdef ENABLE_LCD
+
 #include "../Inc/lcd_ili9488.h"
 #include "../Inc/lcd_common.h"
-//#include "user_debug.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void ILI9488_Lcd_Scan_Dir(UINT16 width, UINT16 height, UINT16 Xcmd, UINT16 Ycmd, UINT8 dir)
 {
   UINT16 regval = 0;
@@ -202,9 +199,5 @@ void ILI9488_Lcd_Init(void)
   LCD_WR_REG(0x29);
 }
 
-#ifdef __cplusplus
-} //extern "C"
 #endif
-
-
 

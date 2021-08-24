@@ -1,7 +1,7 @@
 #ifndef __LCD_H
 #define __LCD_H
-#include "sys.h"
-#include <stdint.h>
+
+#ifdef ENABLE_LCD
 
 #ifdef __cplusplus
 extern "C" {
@@ -217,6 +217,8 @@ uint16_t Get_SSD_Value(uint16_t CMD);
 
 #ifdef __cplusplus
 } // extern "C" {
+#endif
+
 #endif
 
 #endif

@@ -1,6 +1,11 @@
 #include "user_common.h"
 #include "main.h"
 
+
+#if defined(STM32F407xx)
+  #include "globalvariables.h"
+#endif
+
 #if defined(USE_APP1) || defined(USE_APP2)
 static void user_NVIC_SetVectorTable(uint32_t Offset)
 {
@@ -56,6 +61,15 @@ void user_init(void)
   }
 
   #elif defined(USE_APP2)
+  #if defined(STM32F407xx)
+  user_delay_init(168);
+  globalvariables_init();
+  // 串口初始化
+  user_uart1_dma_start();
+  // 看门狗初始化
+  user_iwdg_init();
+  user_sd_init();
+  #elif defined(STM32F429xx)
   user_os_init();
   delay_init(168);
   SDRAM_Init();
@@ -64,7 +78,9 @@ void user_init(void)
   user_uart1_dma_start();
   #endif
   #endif
+  #endif
 }
+
 
 
 

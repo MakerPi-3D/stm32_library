@@ -1,6 +1,8 @@
 #include "user_board_pin.h"
 #include "user_mcu.h"
 
+#if defined(STM32F429xx)
+
 static void board_stm32_gpio_init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -283,8 +285,12 @@ static void board_deinit_spi_cs_pin(void)
   HAL_GPIO_DeInit(GD32_B_CS_GPIO_Port, GD32_B_CS_Pin);
 }
 
+#endif
+
 void user_board_init(void)
 {
+  #if defined(STM32F429xx)
+
   if (mcu_id == MCU_STM32F429IGT6)
   {
     //stm32 Ã»ÓÐstep cs pin
@@ -347,5 +353,7 @@ void user_board_init(void)
     USBH_LL_Start(&hUSB_Host);
     */
   }
+
+  #endif
 }
 

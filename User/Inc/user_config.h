@@ -21,7 +21,9 @@
       #define ENABLE_FSMC
       #define USE_LCD_SHOW
     #endif
-    #define ENABLE_NAND
+    #define ENABLE_IWDG
+    #define ENABLE_SD
+    #define ENABLE_DELAY
     #define ENABLE_FREERTOS
     #ifdef ENABLE_FREERTOS
       //#define ENABLE_OS_POOL

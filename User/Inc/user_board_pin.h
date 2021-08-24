@@ -1,16 +1,18 @@
 #ifndef USER_BOARD_PIN_H
 #define USER_BOARD_PIN_H
 
-#if defined(STM32F429xx)
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if defined(STM32F407xx)
+
+#elif defined(STM32F429xx)
 
 /* Includes ------------------------------------------------------------------*/
 #include "user_board.h"
 #include "user_mcu.h"
 #include <stdbool.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define USER_GPIO_READ(MCU, TYPE)   HAL_GPIO_ReadPin(MCU##_##TYPE##_GPIO_Port, MCU##_##TYPE##_Pin)
 #define USER_GPIO_WRITE(MCU, TYPE, value)   HAL_GPIO_WritePin(MCU##_##TYPE##_GPIO_Port, MCU##_##TYPE##_Pin, value)
@@ -53,10 +55,10 @@ __inline static bool user_pin_sig_mat_e0_read(void) USER_GPIO_GET(SIG_MAT_E0, GP
 __inline static bool user_pin_sig_mat_e1_read(void) USER_GPIO_GET(SIG_MAT_E1, GPIO_PIN_SET)
 __inline static bool user_pin_sig_door_read(void) USER_GPIO_GET(SIG_DOOR, GPIO_PIN_RESET)
 
-#ifdef __cplusplus
-} //extern "C" {
 #endif
 
+#ifdef __cplusplus
+} //extern "C" {
 #endif
 
 #endif /* USER_BOARD_PIN_H */

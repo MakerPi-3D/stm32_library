@@ -1,5 +1,7 @@
 #include "user_common.h"
 
+#ifdef ENABLE_LCD
+
 // 常用ASCII表
 // 偏移量32
 // ASCII字符集: !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
@@ -309,5 +311,5 @@ const unsigned char asc2_2412[95][36] =
 };
 
 
-
+#endif
 

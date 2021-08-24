@@ -14,9 +14,22 @@
 #include "./user_util.h"
 #include "./user_debug.h"
 #include "./user_board_pin.h"
+#include "./user_sys.h"
 
 #ifdef ENABLE_UART1
   #include "user_uart1.h"
+#endif
+
+#ifdef ENABLE_IWDG
+  #include "user_iwdg.h"
+#endif
+
+#ifdef ENABLE_SD
+  #include "user_sd.h"
+#endif
+
+#ifdef ENABLE_DELAY
+  #include "user_delay.h"
 #endif
 
 #ifdef ENABLE_FREERTOS
@@ -57,12 +70,6 @@
 #ifdef HAS_FILAMENT_SENSOR
   #include "../../Feature/Inc/filament_check.h"
 #endif
-
-#if defined(USE_APP1)
-  #include "delay.h"
-#elif defined(USE_APP2)
-  #include "delay.h"
-#endif //USE_BOOT
 
 #ifdef __cplusplus
 extern "C" {
