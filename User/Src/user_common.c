@@ -69,6 +69,7 @@ void user_init(void)
   // 看门狗初始化
   user_iwdg_init();
   user_sd_init();
+  feature_fan_control_init();
   #elif defined(STM32F429xx)
   user_os_init();
   delay_init(168);

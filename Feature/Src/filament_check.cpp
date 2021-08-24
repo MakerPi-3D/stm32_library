@@ -230,11 +230,6 @@ void feature_filament_check_init(void)
     {
       Mat_Cut_Init();
     }
-    else
-    {
-      // 默认PA5注册为断料检测ADC引脚，如果开启堵料检测，需要复位PA5
-      gpio_material_check_init();
-    }
   }
 }
 

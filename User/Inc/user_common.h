@@ -71,6 +71,10 @@
   #include "../../Feature/Inc/filament_check.h"
 #endif
 
+#ifdef HAS_FAN_CONTROL
+  #include "../../Feature/Inc/fan_control.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -36,6 +36,7 @@
       #define ENABLE_UART1_DMA
     #endif
     #define HAS_FILAMENT_SENSOR
+    #define HAS_FAN_CONTROL
     /**
     * S-Curve Acceleration
     *
