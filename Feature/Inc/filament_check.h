@@ -7,6 +7,7 @@
 extern "C" {
 #endif
 
+extern void feature_filament_check_init(void);
 extern void feature_filament_check(void);
 
 #ifdef __cplusplus

@@ -116,6 +116,9 @@ void _feature_filament_check_single(void)
   }
 }
 
+void feature_filament_check_init(void)
+{
+}
 
 void feature_filament_check(void)
 {
@@ -166,8 +169,6 @@ void feature_filament_check(void)
 }
 
 #elif defined(STM32F407xx)
-#include "materialcheck.h"
-#include "stm32f4xx_hal.h"
 #include "globalvariables.h"
 #include "PrintControl.h"
 #include "user_debug.h"
@@ -221,11 +222,7 @@ static void Check_NotHaveMat(void)
 } // extern "C" {
 #endif
 
-MaterialCheck::MaterialCheck()
-{
-}
-
-void MaterialCheck::init(void)
+void feature_filament_check_init(void)
 {
   if (t_sys_data_current.enable_material_check) //有断料检测功能
   {
@@ -241,7 +238,7 @@ void MaterialCheck::init(void)
   }
 }
 
-void MaterialCheck::process(void)
+void feature_filament_check(void)
 {
   if (t_sys_data_current.enable_material_check) //有断料检测功能
   {
@@ -285,7 +282,6 @@ void MaterialCheck::process(void)
   }
 }
 
-MaterialCheck materialCheck;
 #endif
 
 #endif // HAS_FILAMENT_SENSOR
