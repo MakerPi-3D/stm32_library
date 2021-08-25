@@ -89,6 +89,14 @@ void user_get_mcu_id(void)
     {
       mcu_id = MCU_GD32F450IIH6;
     }
+    else if (mcu_cpu_id == 0x410FC241 && mcu_rev_id == 0x2104 && mcu_dev_id == 0x0414) //GD32F303RET6
+    {
+      mcu_id = MCU_GD32F303RET6;
+    }
+    else if (mcu_cpu_id == 0x410FC241 && mcu_rev_id == 0x1701 && mcu_dev_id == 0x0414) //GD32F303RCT6
+    {
+      mcu_id = MCU_GD32F303RCT6;
+    }
     else
     {
       mcu_id = MCU_NOT_SUPPORT;
@@ -99,6 +107,14 @@ void user_get_mcu_id(void)
     if (mcu_cpu_id == 0x410FC241 && mcu_rev_id == 0x2003 && mcu_dev_id == 0x0419) //STM32F429IGT6
     {
       mcu_id = MCU_STM32F429IGT6;
+    }
+    else if (mcu_cpu_id == 0x411FC231 && mcu_rev_id == 0x1003 && mcu_dev_id == 0x0414) //STM32F103RCT6
+    {
+      mcu_id = MCU_STM32F103RCT6;
+    }
+    else if (mcu_cpu_id == 0x410FC241 && mcu_rev_id == 0x1007 && mcu_dev_id == 0x0413) //STM32F407VGT6
+    {
+      mcu_id = MCU_STM32F407VGT6;
     }
     else
     {
@@ -126,13 +142,30 @@ void user_print_mcu_info(void)
     curr_mcu = MCU_STM32F4;
     USER_EchoLog("Current MCU is STM32F429IGT6");
   }
+  else if (mcu_id == MCU_STM32F407VGT6)
+  {
+    curr_mcu = MCU_STM32F4;
+    USER_EchoLog("Current MCU is STM32F407VGT6");
+  }
 
-  uint16_t Sram_Size = *(volatile uint16_t *)(flash_addr[curr_mcu]);
-  uint16_t Flash_Size = *(volatile uint16_t *)(flash_addr[curr_mcu] + 2U);
-  get_mcu_id(&mcu_id_buf[0], curr_mcu);
-  USER_EchoLog("Cpu ID: %X; Dev ID: %X; REV ID: %X;", mcu_cpu_id, mcu_dev_id, mcu_rev_id);
-  USER_EchoLog("Unique ID: %X %X %X", mcu_id_buf[2], mcu_id_buf[1], mcu_id_buf[0]);
-  USER_EchoLog("Flash_Size: %dKB, Sram Size: %dKB", Flash_Size, Sram_Size);
-  USER_EchoLog("Buid Date: %s, %s", __DATE__, __TIME__);
+  if (get_jtag_id() == 0x07A3) //GD32
+  {
+    uint16_t Sram_Size = *(volatile uint16_t *)(flash_addr[curr_mcu]);
+    uint16_t Flash_Size = *(volatile uint16_t *)(flash_addr[curr_mcu] + 2U);
+    get_mcu_id(&mcu_id_buf[0], curr_mcu);
+    USER_EchoLog("Cpu ID: %X; Dev ID: %X; REV ID: %X;", mcu_cpu_id, mcu_dev_id, mcu_rev_id);
+    USER_EchoLog("Unique ID: %X %X %X", mcu_id_buf[2], mcu_id_buf[1], mcu_id_buf[0]);
+    USER_EchoLog("Flash_Size: %dKB, Sram Size: %dKB", Flash_Size, Sram_Size);
+    USER_EchoLog("Buid Date: %s, %s", __DATE__, __TIME__);
+  }
+  else if (get_jtag_id() == 0x0041)  //STM32
+  {
+    uint16_t Flash_Size = *(volatile uint16_t *)(flash_addr[curr_mcu]);
+    get_mcu_id(&mcu_id_buf[0], curr_mcu);
+    USER_EchoLog("Cpu ID: %X; Dev ID: %X; REV ID: %X;", mcu_cpu_id, mcu_dev_id, mcu_rev_id);
+    USER_EchoLog("Unique ID: %X %X %X", mcu_id_buf[2], mcu_id_buf[1], mcu_id_buf[0]);
+    USER_EchoLog("Flash_Size: %dKB", Flash_Size);
+    USER_EchoLog("Buid Date: %s, %s", __DATE__, __TIME__);
+  }
 }
 
