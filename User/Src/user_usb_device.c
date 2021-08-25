@@ -7,8 +7,8 @@
 #include "interface.h"
 
 #if defined(STM32F407xx)
-  #define TRANS_FILE_BUF_SIZE (256)  //256
-  volatile uint8_t trans_file_bufs[TRANS_FILE_BUF_SIZE];
+  #define TRANS_FILE_BUF_SIZE (2048)  //256
+  volatile uint8_t trans_file_bufs[TRANS_FILE_BUF_SIZE]  __attribute__((at(0X10000000)));
   #define APP_RX_DATA_SIZE 2048
 #elif defined(STM32F429xx)
   #define TRANS_FILE_BUF_SIZE (65536)  //64K
@@ -45,7 +45,11 @@ static void _user_usb_device_receive_m28(const char *Buf) //M28 test.gcode S1024
   StrHeadPos = (char *)&Buf[4];
   StrEndPos = strchr(StrHeadPos, ' ');
   *StrEndPos = 0;
+  #if defined(STM32F407xx)
+  (void)snprintf((char *)transFileStatus.FileNameStr, sizeof(transFileStatus.FileNameStr), "0:/%s", StrHeadPos); //获取文件名，并添加上SD卡路径  char FileNameStr[40]//长度不能超
+  #elif defined(STM32F429xx)
   (void)snprintf((char *)transFileStatus.FileNameStr, sizeof(transFileStatus.FileNameStr), "1:/%s", StrHeadPos); //获取文件名，并添加上SD卡路径  char FileNameStr[40]//长度不能超
+  #endif
   transFileStatus.IsTaskCritical = 1;
   //获取文件大小
   StrHeadPos = StrEndPos + 2; //指向文件大小数值的开头

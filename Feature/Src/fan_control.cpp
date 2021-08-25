@@ -12,6 +12,7 @@ extern TIM_HandleTypeDef htim5;
 void feature_fan_control_init(void)
 {
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);
+  htim5.Instance->CCR2 = 0;
 }
 
 void feature_fan_control_e_pwm(int pwm_value)
