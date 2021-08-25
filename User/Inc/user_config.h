@@ -79,7 +79,11 @@
     #ifdef ENABLE_UART1
       #define ENABLE_UART1_DMA
     #endif
+    #define ENABLE_DELAY
+    #define ENABLE_IWDG
     #define HAS_FILAMENT_SENSOR
+    #define HAS_FAN_CONTROL
+    #define HAS_BUZZER_CONTROL
     /**
     * S-Curve Acceleration
     *

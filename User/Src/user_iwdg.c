@@ -34,7 +34,7 @@ void user_iwdg_init(void)
 //3s喂一次狗，5s没有喂狗会复位重启
 void user_iwdg_refresh(void)
 {
-  static ULONG RefreshWatchDogTimeOut = 0;
+  static unsigned long RefreshWatchDogTimeOut = 0;
 
   if (RefreshWatchDogTimeOut < xTaskGetTickCount())
   {

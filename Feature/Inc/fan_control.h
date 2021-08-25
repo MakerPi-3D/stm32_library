@@ -7,8 +7,9 @@
 extern "C" {
 #endif
 
-extern void feature_fan_control_init(void);
-extern void feature_fan_control_e_pwm(int pwm_value);
+extern int feature_get_extruder_fan_speed(void);
+extern void feature_set_extruder_fan_speed(int value);
+extern void feature_fan_control(void);
 
 #ifdef __cplusplus
 } //extern "C"

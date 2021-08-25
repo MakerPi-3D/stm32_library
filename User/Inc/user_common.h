@@ -38,10 +38,11 @@
 #endif
 
 #ifdef ENABLE_SDRAM
-  #include "../../Lcd/Inc/sdram.h"
+  #include "./user_sdram.h"
 #endif
 
 #ifdef ENABLE_NAND
+  #include "./user_nand.h"
   #include "../../Nand/Inc/nand.h"
   #include "../../Nand/Inc/ftl.h"
 #endif
@@ -72,7 +73,12 @@
 #endif
 
 #ifdef HAS_FAN_CONTROL
+  #include "./user_fan.h"
   #include "../../Feature/Inc/fan_control.h"
+#endif
+
+#ifdef HAS_BUZZER_CONTROL
+  #include "./user_buzzer.h"
 #endif
 
 #ifdef __cplusplus

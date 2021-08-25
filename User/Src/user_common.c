@@ -72,12 +72,16 @@ void user_init(void)
   feature_fan_control_init();
   #elif defined(STM32F429xx)
   user_os_init();
-  delay_init(168);
-  SDRAM_Init();
+  user_delay_init(168);
+  user_iwdg_init();// 看门狗初始化
+  user_fmc_sdram_init();
+  user_nand_init();
   LCD_Init();//触摸屏初始化
   #ifdef ENABLE_UART1_DMA
   user_uart1_dma_start();
   #endif
+  user_fan_control_init();
+  user_buzzer_init();
   #endif
   #endif
 }

@@ -1,7 +1,5 @@
-#include "../Inc/nand.h"
-#include "delay.h"
-#include <stdio.h>
 #include "user_common.h"
+
 //////////////////////////////////////////////////////////////////////////////////
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32F429开发板
@@ -45,7 +43,7 @@ u8 NAND_Init(void)
   AttSpaceTiming.HiZSetupTime = 1;    //高阻态时间
   HAL_NAND_Init(&hnand1, &ComSpaceTiming, &AttSpaceTiming);
   NAND_Reset();                   //复位NAND
-  delay_ms(100);
+  user_delay_ms(100);
   nand_dev.id = NAND_ReadID();        //读取ID
   NAND_ModeSet(4);              //设置为MODE4,高速模式
 
@@ -72,42 +70,7 @@ u8 NAND_Init(void)
   return 0;
 }
 
-////NAND FALSH底层驱动,引脚配置，时钟使能
-////此函数会被HAL_NAND_Init()调用
-//void HAL_NAND_MspInit(NAND_HandleTypeDef *hnand)
-//{
-//    GPIO_InitTypeDef GPIO_Initure;
-//
-//    __HAL_RCC_FMC_CLK_ENABLE();             //使能FMC时钟
-//    __HAL_RCC_GPIOD_CLK_ENABLE();           //使能GPIOD时钟
-//    __HAL_RCC_GPIOE_CLK_ENABLE();           //使能GPIOE时钟
-//    __HAL_RCC_GPIOG_CLK_ENABLE();           //使能GPIOG时钟
-//
-//  //初始化PD6 R/B引脚
-//  GPIO_Initure.Pin=GPIO_PIN_6;
-//    GPIO_Initure.Mode=GPIO_MODE_INPUT;          //输入
-//    GPIO_Initure.Pull=GPIO_PULLUP;          //上拉
-//    GPIO_Initure.Speed=GPIO_SPEED_HIGH;         //高速
-//    HAL_GPIO_Init(GPIOD,&GPIO_Initure);
-//
-//  //初始化PG9 NCE3引脚
-//    GPIO_Initure.Pin=GPIO_PIN_9;
-//    GPIO_Initure.Mode=GPIO_MODE_AF_PP;          //输入
-//    GPIO_Initure.Pull=GPIO_NOPULL;          //上拉
-//    GPIO_Initure.Speed=GPIO_SPEED_HIGH;         //高速
-//  GPIO_Initure.Alternate=GPIO_AF12_FMC;       //复用为FMC
-//    HAL_GPIO_Init(GPIOG,&GPIO_Initure);
-//
-//    //初始化PD0,1,4,5,11,12,14,15
-//    GPIO_Initure.Pin=GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5|\
-//                     GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_14|GPIO_PIN_15;
-//    GPIO_Initure.Pull=GPIO_NOPULL;
-//    HAL_GPIO_Init(GPIOD,&GPIO_Initure);
 
-//    //初始化PE7,8,9,10
-//    GPIO_Initure.Pin=GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10;
-//    HAL_GPIO_Init(GPIOE,&GPIO_Initure);
-//}
 
 //读取NAND FLASH的ID
 //返回值:0,成功;

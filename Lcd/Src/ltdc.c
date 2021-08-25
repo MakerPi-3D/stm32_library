@@ -4,8 +4,6 @@
 
 #include "../Inc/ltdc.h"
 #include "../Inc/lcd.h"
-#include "user_ltdc.h"
-#include "user_mcu.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
@@ -501,45 +499,6 @@ void LTDC_Init(void)
   LTDC_Clear(0XFFFFFFFF);     //清屏
 }
 
-#ifdef HAL_SRAM_MODULE_ENABLED
-//LTDC底层IO初始化和时钟使能
-//此函数会被HAL_LTDC_Init()调用
-//hltdc:LTDC句柄
-void HAL_LTDC_MspInit(LTDC_HandleTypeDef *hltdc)
-{
-  GPIO_InitTypeDef GPIO_Initure;
-  __HAL_RCC_LTDC_CLK_ENABLE();                //使能LTDC时钟
-  __HAL_RCC_DMA2D_CLK_ENABLE();               //使能DMA2D时钟
-  __HAL_RCC_GPIOB_CLK_ENABLE();               //使能GPIOB时钟
-  __HAL_RCC_GPIOF_CLK_ENABLE();               //使能GPIOF时钟
-  __HAL_RCC_GPIOG_CLK_ENABLE();               //使能GPIOG时钟
-  __HAL_RCC_GPIOH_CLK_ENABLE();               //使能GPIOH时钟
-  __HAL_RCC_GPIOI_CLK_ENABLE();               //使能GPIOI时钟
-  //初始化PB5，背光引脚
-  GPIO_Initure.Pin = GPIO_PIN_5;              //PB5推挽输出，控制背光
-  GPIO_Initure.Mode = GPIO_MODE_OUTPUT_PP;    //推挽输出
-  GPIO_Initure.Pull = GPIO_PULLUP;            //上拉
-  GPIO_Initure.Speed = GPIO_SPEED_HIGH;       //高速
-  HAL_GPIO_Init(GPIOB, &GPIO_Initure);
-  //初始化PF10
-  GPIO_Initure.Pin = GPIO_PIN_10;
-  GPIO_Initure.Mode = GPIO_MODE_AF_PP;        //复用
-  GPIO_Initure.Pull = GPIO_NOPULL;
-  GPIO_Initure.Speed = GPIO_SPEED_HIGH;       //高速
-  GPIO_Initure.Alternate = GPIO_AF14_LTDC;    //复用为LTDC
-  HAL_GPIO_Init(GPIOF, &GPIO_Initure);
-  //初始化PG6,7,11
-  GPIO_Initure.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_11;
-  HAL_GPIO_Init(GPIOG, &GPIO_Initure);
-  //初始化PH9,10,11,12,13,14,15
-  GPIO_Initure.Pin = GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | \
-                     GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
-  HAL_GPIO_Init(GPIOH, &GPIO_Initure);
-  //初始化PI0,1,2,4,5,6,7,9,10
-  GPIO_Initure.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_4 | GPIO_PIN_5 | \
-                     GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_9 | GPIO_PIN_10;
-  HAL_GPIO_Init(GPIOI, &GPIO_Initure);
-}
-#endif
+
 #endif
 
