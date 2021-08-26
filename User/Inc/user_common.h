@@ -81,6 +81,11 @@
   #include "./user_buzzer.h"
 #endif
 
+#ifdef HAS_LED_CONTROL
+  #include "./user_led.h"
+  #include "../../Feature/Inc/led_control.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -3,14 +3,13 @@
 #ifdef HAS_BUZZER_CONTROL
 
 #if defined(STM32F429xx)
-
   extern TIM_HandleTypeDef htim11;
-
-  static volatile bool is_alarm_on = false;
-
 #elif defined(STM32F407xx)
+  #include "globalvariables.h"
+  #include "pins.h"
 #endif
 
+static volatile bool is_alarm_on = false;
 
 void user_buzzer_init(void)
 {
@@ -22,10 +21,15 @@ void user_buzzer_init(void)
 
 void user_buzzer_control(const bool is_on)
 {
+  #if defined(STM32F429xx)
   unsigned int compare = is_on ? 1000 : 0;
   //compare = (compare / 0.9 + 50) * 10;
   htim11.Instance->ARR  = compare;
   htim11.Instance->CCR1 = compare / 2;
+  #elif defined(STM32F407xx)
+  t_gui_p.isOpenBeep = is_on;
+  digitalWrite(BEEPER_PIN, is_on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  #endif
 }
 
 void user_buzzer_beep(unsigned short time)

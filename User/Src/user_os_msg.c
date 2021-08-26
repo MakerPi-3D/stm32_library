@@ -8,7 +8,7 @@ extern osMessageQId GcodeCommandHandle;
   osPoolDef(m_pool_t, 32, os_message_t);
   osPoolId m_os_pool_id;
 #else
-  #define CMD_BUF_SIZE 32
+  #define CMD_BUF_SIZE 64
   #define MAX_CMD_SIZE (96+GCODE_BUF_OFFSET_GCODE_STR)
   static char os_put_msg[CMD_BUF_SIZE][MAX_CMD_SIZE];
   volatile uint8_t os_put_msg_head = 0;

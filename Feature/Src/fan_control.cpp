@@ -15,12 +15,20 @@ extern "C" {
 
 extern int IsPrint(void);
 extern uint8_t GetIsDisableStepperStatus(void);
+#elif defined(STM32F407xx)
+#include "globalvariables.h"
+
+#include "temperature.h"
+#include "planner.h"
+#include "user_interface.h"
+
+#include "stm32f4xx_hal.h"
+#include "config_motion_3d.h"
+#include "gcode_global_params.h"
+#include "user_common.h"
+#endif
 
 static volatile int user_extruder_fan_speed = 0;
-
-#elif defined(STM32F407xx)
-
-#endif
 
 // 电机风扇控制
 static void feature_fan_control_eb_motor(void)
@@ -62,6 +70,34 @@ static void feature_fan_control_eb_motor(void)
   }
 
   #elif defined(STM32F407xx)
+  static bool motor_fan_status = false;
+  static uint8_t Open_Fan_temp = 50;
+
+  if (sg_grbl::planner_moves_planned() || sg_grbl::temperature_get_extruder_current(0) >= Open_Fan_temp)
+  {
+    if (motor_fan_status)
+      return;
+
+    if (2 == t_sys_data_current.enable_v5_extruder)
+      feature_set_extruder_fan_speed(255);
+
+    user_fan_control_eb_motor(true);
+    user_fan_control_board_cool(true);
+    motor_fan_status = true;
+  }
+  else
+  {
+    if (!motor_fan_status)
+      return;
+
+    if (2 == t_sys_data_current.enable_v5_extruder)
+      feature_set_extruder_fan_speed(0);
+
+    user_fan_control_eb_motor(false);
+    user_fan_control_board_cool(false);
+    motor_fan_status = false;
+  }
+
   #endif
 }
 
@@ -123,6 +159,13 @@ void feature_set_extruder_fan_speed(int value)
   }
 
   #elif defined(STM32F407xx)
+
+  if (user_extruder_fan_speed != value)
+  {
+    user_extruder_fan_speed = value;
+    user_fan_control_e_pwm(static_cast<uint16_t>(user_extruder_fan_speed));
+  }
+
   #endif
 }
 

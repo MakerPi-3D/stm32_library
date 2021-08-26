@@ -228,7 +228,13 @@ void feature_filament_check_init(void)
   {
     if (t_sys_data_current.model_id == M41G)
     {
-      Mat_Cut_Init();
+      //修改M41G 5V_FAN做断料检测IO
+      GPIO_InitTypeDef GPIO_InitStruct;
+      GPIO_InitStruct.Pin = GPIO_PIN_14;
+      GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+      GPIO_InitStruct.Pull = GPIO_PULLUP;
+      GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+      HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
     }
   }
 }

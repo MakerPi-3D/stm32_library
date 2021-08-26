@@ -10,6 +10,10 @@
   extern TIM_HandleTypeDef htim3;
 
 #elif defined(STM32F407xx)
+  #include "config_model_tables.h"
+  #include "sysconfig_data.h"
+  #include "globalvariables.h"
+  #include "pins.h"
   extern TIM_HandleTypeDef htim5;
 #endif
 
@@ -32,6 +36,18 @@ void user_fan_control_init(void)
   #elif defined(STM32F407xx)
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2); //E喷嘴风扇
   htim5.Instance->CCR2 = 0;
+
+  // 加热块扇热风扇（5V）初始化
+  if (t_sys_data_current.model_id != M41G)
+  {
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitStruct.Pin = GPIO_PIN_14;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  }
+
   #endif
 }
 
@@ -103,6 +119,7 @@ void user_fan_control_eb_motor(bool isOn)
   }
 
   #elif defined(STM32F407xx)
+  digitalWrite(MOTOR_FAN_PIN, (isOn ? GPIO_PIN_SET : GPIO_PIN_RESET));
   #endif
 }
 
@@ -128,10 +145,26 @@ void user_fan_control_nozzle_heat_block(bool isOn)
   }
 
   #elif defined(STM32F407xx)
+
+  if (t_sys_data_current.enable_color_mixing) //混色打开5V风扇
+  {
+    if (t_sys_data_current.model_id != M41G) //M41G 5V_FAN做断料检测IO
+    {
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, isOn ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    }
+  }
+
   #endif
 }
 
-
+void user_fan_control_board_cool(bool isOn)
+{
+  #if defined(STM32F429xx)
+  //Alway on
+  #elif defined(STM32F407xx)
+  digitalWrite(BOARD_FAN_PIN, isOn ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  #endif
+}
 
 
 
