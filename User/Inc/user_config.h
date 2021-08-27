@@ -86,6 +86,7 @@
     #define HAS_FILAMENT_SENSOR
     #define HAS_FAN_CONTROL
     #define HAS_BUZZER_CONTROL
+    #define HAS_LED_CONTROL
     /**
     * S-Curve Acceleration
     *
