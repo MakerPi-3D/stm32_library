@@ -39,6 +39,7 @@
     #define HAS_FAN_CONTROL
     #define HAS_BUZZER_CONTROL
     #define HAS_LED_CONTROL
+    #define HAS_POWER_RECOVERY
     /**
     * S-Curve Acceleration
     *
@@ -87,6 +88,7 @@
     #define HAS_FAN_CONTROL
     #define HAS_BUZZER_CONTROL
     #define HAS_LED_CONTROL
+    #define HAS_POWER_RECOVERY
     /**
     * S-Curve Acceleration
     *

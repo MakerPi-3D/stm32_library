@@ -1,6 +1,6 @@
-#include "iap_param.h"
 
 #if defined(USE_BOOT) || defined(USE_APP1)
+#include "..\Inc\iap_param.h"
 // 功能文件名
 const char *unpack_function_file_name[FUNCTION_FILE_SIZE] =
 {

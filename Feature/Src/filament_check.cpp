@@ -126,7 +126,7 @@ void feature_filament_check(void)
   {
     if (filament_check_timeout < xTaskGetTickCount())
     {
-      if (IsPrint() && isM109HeatingComplete() && gcode::g28_complete_flag) //打印开始且加热完成归零后 才去检测是否有料
+      if (IsPrint() && isM109HeatingComplete())// && gcode::g28_complete_flag) //打印开始且加热完成归零后 才去检测是否有料
       {
         if (flash_param_t.extruder_type == EXTRUDER_TYPE_DUAL && t_sys.is_idex_extruder == 1) // idex模式
         {

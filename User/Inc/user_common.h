@@ -86,6 +86,11 @@
   #include "../../Feature/Inc/led_control.h"
 #endif
 
+#ifdef HAS_POWER_RECOVERY
+  #include "../../Feature/Inc/power_recovery.h"
+  #include "../../Feature/Inc/power_data.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
