@@ -11,7 +11,7 @@ extern "C" {
 #define GCODE_TYPE_UART 1
 #define GCODE_TYPE_INTERNAL 2
 
-extern void user_send_str(uint8_t cmd_str_type, char *msg);
+extern void user_send_uart_cmd(const char *msg, const unsigned int msg_length);
 extern void user_send_internal_cmd(const char *msg);
 extern void user_send_file_cmd(const char *msg, uint32_t file_pos, long layer_count, long current_layer);
 extern void user_clear_queue_str(void);

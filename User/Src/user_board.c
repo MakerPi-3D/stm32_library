@@ -3,6 +3,70 @@
 
 #if defined(STM32F429xx)
 
+volatile Motor_Pin_TypeDer GD32_Motor_Pin[5][MAX_NUM_AXIS] =
+{
+  { {GD32_X2_STP_Pin, GD32_X2_STP_GPIO_Port}, {GD32_X_STP_Pin, GD32_X_STP_GPIO_Port}, {GD32_Y_STP_Pin, GD32_Y_STP_GPIO_Port},
+    {GD32_Z_STP_Pin, GD32_Z_STP_GPIO_Port}, {GPIO_PIN_11, GPIOC}, 
+    {GD32_E_STP_Pin, GD32_E_STP_GPIO_Port}, {GD32_B_STP_Pin, GD32_B_STP_GPIO_Port}
+  },
+  { {GD32_X2_DIR_Pin, GD32_X2_DIR_GPIO_Port}, {GD32_X_DIR_Pin, GD32_X_DIR_GPIO_Port}, {GD32_Y_DIR_Pin, GD32_Y_DIR_GPIO_Port},
+    {GD32_Z_DIR_Pin, GD32_Z_DIR_GPIO_Port}, {GPIO_PIN_10, GPIOC}, {GD32_E_DIR_Pin, GD32_E_DIR_GPIO_Port}, {GD32_B_DIR_Pin, GD32_B_DIR_GPIO_Port}
+  },
+  { {GD32_X2_EN_Pin, GD32_X2_EN_GPIO_Port}, {GD32_X_EN_Pin, GD32_X_EN_GPIO_Port},    {GD32_Y_EN_Pin, GD32_Y_EN_GPIO_Port},
+    {GD32_Z_EN_Pin, GD32_Z_EN_GPIO_Port}, {GPIO_PIN_2, GPIOD}, {GD32_E_EN_Pin, GD32_E_EN_GPIO_Port}, {GD32_B_EN_Pin, GD32_B_EN_GPIO_Port}
+  },
+  { {GD32_SIG_X2_Pin, GD32_SIG_X2_GPIO_Port}, {NULL, NULL},  {GD32_SIG_Y_Pin, GD32_SIG_Y_GPIO_Port},
+    {GD32_SIG_Z_MIN_Pin, GD32_SIG_Z_MIN_GPIO_Port}, {GD32_SIG_DOOR_Pin, GD32_SIG_DOOR_GPIO_Port}, {NULL, NULL}, {NULL, NULL}
+  },
+  { {NULL, NULL},  {GD32_SIG_X_Pin, GD32_SIG_X_GPIO_Port}, {NULL, NULL},
+    {GD32_SIG_Z_MAX_Pin, GD32_SIG_Z_MAX_GPIO_Port}, {NULL, NULL}, {NULL, NULL}, {NULL, NULL}
+  },
+};
+
+volatile Motor_Pin_TypeDer STM32_Motor_Pin[5][MAX_NUM_AXIS] =
+{
+  { {STM32_X2_STP_Pin, STM32_X2_STP_GPIO_Port}, {STM32_X_STP_Pin, STM32_X_STP_GPIO_Port}, {STM32_Y_STP_Pin, STM32_Y_STP_GPIO_Port},
+    {STM32_Z_STP_Pin, STM32_Z_STP_GPIO_Port}, {GPIO_PIN_11, GPIOC}, {STM32_E_STP_Pin, STM32_E_STP_GPIO_Port}, {STM32_B_STP_Pin, STM32_B_STP_GPIO_Port}
+  },
+  { {STM32_X2_DIR_Pin, STM32_X2_DIR_GPIO_Port}, {STM32_X_DIR_Pin, STM32_X_DIR_GPIO_Port}, {STM32_Y_DIR_Pin, STM32_Y_DIR_GPIO_Port},
+    {STM32_Z_DIR_Pin, STM32_Z_DIR_GPIO_Port}, {GPIO_PIN_10, GPIOC}, {STM32_E_DIR_Pin, STM32_E_DIR_GPIO_Port},  {STM32_B_DIR_Pin, STM32_B_DIR_GPIO_Port}
+  },
+  { {STM32_X2_EN_Pin, STM32_X2_EN_GPIO_Port}, {STM32_X_EN_Pin, STM32_X_EN_GPIO_Port},    {STM32_Y_EN_Pin, STM32_Y_EN_GPIO_Port},
+    {STM32_Z_EN_Pin, STM32_Z_EN_GPIO_Port}, {GPIO_PIN_2, GPIOD}, {STM32_E_EN_Pin, STM32_E_EN_GPIO_Port},    {STM32_B_EN_Pin, STM32_B_EN_GPIO_Port}
+  },
+  { {STM32_SIG_X2_Pin, STM32_SIG_X2_GPIO_Port}, {NULL, NULL},  {STM32_SIG_Y_Pin, STM32_SIG_Y_GPIO_Port},
+    {STM32_SIG_Z_MIN_Pin, STM32_SIG_Z_MIN_GPIO_Port}, {STM32_SIG_DOOR_Pin, STM32_SIG_DOOR_GPIO_Port}, {NULL, NULL},  {NULL, NULL}
+  },
+  { {NULL, NULL},  {STM32_SIG_X_Pin, STM32_SIG_X_GPIO_Port}, {NULL, NULL},
+    {STM32_SIG_Z_MAX_Pin, STM32_SIG_Z_MAX_GPIO_Port}, {NULL, NULL}, {NULL, NULL},  {NULL, NULL}
+  },
+};
+
+volatile Heat_Pin_TypeDer GD32_Heat_Pin[4] =
+{
+  {GD32_HEAT_NOZ_E_Pin, GD32_HEAT_NOZ_E_GPIO_Port}, {GD32_HEAT_BED_Pin, GD32_HEAT_BED_GPIO_Port},
+  {GD32_HEAT_CAVITY_Pin, GD32_HEAT_CAVITY_GPIO_Port}, {GD32_HEAT_NOZ_B_Pin, GD32_HEAT_NOZ_B_GPIO_Port}
+};
+
+volatile Heat_Pin_TypeDer STM32_Heat_Pin[4] =
+{
+  {STM32_HEAT_NOZ_E_Pin, STM32_HEAT_NOZ_E_GPIO_Port}, {STM32_HEAT_BED_Pin, STM32_HEAT_BED_GPIO_Port},
+  {STM32_HEAT_CAVITY_Pin, STM32_HEAT_CAVITY_GPIO_Port}, {STM32_HEAT_NOZ_B_Pin, STM32_HEAT_NOZ_B_GPIO_Port}
+};
+
+volatile ADC_Pin_TypeDer GD32_ADC_Pin[4] =
+{
+  {GD32_TEMP_E_Pin, ADC_CHANNEL_3, GD32_TEMP_E_GPIO_Port}, {GD32_TEMP_BED_Pin, ADC_CHANNEL_6, GD32_TEMP_BED_GPIO_Port},
+  {GD32_TEMP_CAVITY_Pin, ADC_CHANNEL_1, GD32_TEMP_CAVITY_GPIO_Port}, {GD32_TEMP_B_Pin, ADC_CHANNEL_0, GD32_TEMP_B_GPIO_Port}
+};
+
+volatile ADC_Pin_TypeDer STM32_ADC_Pin[4] =
+{
+  {STM32_TEMP_E_Pin, ADC_CHANNEL_3, STM32_TEMP_E_GPIO_Port}, {STM32_TEMP_BED_Pin, ADC_CHANNEL_6, STM32_TEMP_BED_GPIO_Port},
+  {STM32_TEMP_CAVITY_Pin, ADC_CHANNEL_1, STM32_TEMP_CAVITY_GPIO_Port}, {STM32_TEMP_B_Pin, ADC_CHANNEL_0, STM32_TEMP_B_GPIO_Port}
+};
+
+
 static void board_stm32_gpio_init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -60,7 +124,7 @@ static void board_stm32_gpio_init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
   /*Configure GPIO pins : STM32_Y_EN_Pin STM32_B_STP_Pin STM32_X2_EN_Pin STM32_FAN_FILTER_Pin */
-  GPIO_InitStruct.Pin = STM32_Y_EN_Pin | STM32_B_STP_Pin | STM32_X2_EN_Pin | STM32_FAN_FILTER_Pin;
+  GPIO_InitStruct.Pin = STM32_Y_EN_Pin | STM32_B_STP_Pin | STM32_X2_EN_Pin | STM32_FAN_FILTER_Pin | GPIO_PIN_2;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -68,7 +132,7 @@ static void board_stm32_gpio_init(void)
   /*Configure GPIO pins : STM32_E_STP_Pin STM32_LIGHT_BAR_Pin STM32_HEAT_BED_Pin STM32_Z_STP_Pin
                            STM32_Z_DIR_Pin STM32_Z_EN_Pin STM32_HEAT_NOZ_E_Pin */
   GPIO_InitStruct.Pin = STM32_E_STP_Pin | STM32_LIGHT_BAR_Pin | STM32_HEAT_BED_Pin | STM32_Z_STP_Pin
-                        | STM32_Z_DIR_Pin | STM32_Z_EN_Pin | STM32_HEAT_NOZ_E_Pin;
+                        | STM32_Z_DIR_Pin | STM32_Z_EN_Pin | STM32_HEAT_NOZ_E_Pin | GPIO_PIN_10 | GPIO_PIN_11;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

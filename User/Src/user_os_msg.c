@@ -21,7 +21,7 @@ void user_os_init(void)
   #endif
 }
 
-void user_send_str(uint8_t cmd_str_type, char *msg)
+void user_send_uart_cmd(const char *msg, const unsigned int msg_length)
 {
   #ifdef ENABLE_OS_POOL
   os_message_t *message = (os_message_t *)osPoolAlloc(m_os_pool_id);
@@ -35,9 +35,9 @@ void user_send_str(uint8_t cmd_str_type, char *msg)
   #else
   os_put_msg_head = (os_put_msg_head + 1) % CMD_BUF_SIZE;
   memset(os_put_msg[os_put_msg_head], 0, sizeof(char) * (MAX_CMD_SIZE));
-  os_put_msg[os_put_msg_head][GCODE_BUF_OFFSET_TYPE] = cmd_str_type;
-  os_put_msg[os_put_msg_head][GCODE_BUF_OFFSET_GCODE_LENGTH] = strlen(msg);
-  memcpy(&os_put_msg[os_put_msg_head][GCODE_BUF_OFFSET_GCODE_STR], msg, strlen(msg));
+  os_put_msg[os_put_msg_head][GCODE_BUF_OFFSET_TYPE] = GCODE_TYPE_UART;
+  os_put_msg[os_put_msg_head][GCODE_BUF_OFFSET_GCODE_LENGTH] = msg_length;
+  memcpy(&os_put_msg[os_put_msg_head][GCODE_BUF_OFFSET_GCODE_STR], msg, msg_length);
   osMessagePut(GcodeCommandHandle, (uint32_t)os_put_msg[os_put_msg_head], 0);
   #endif
 }

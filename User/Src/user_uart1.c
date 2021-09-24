@@ -128,7 +128,7 @@ __weak void user_uart1_dma_receive_process(unsigned char *data, unsigned short l
 {
   if (length > 0)
   {
-    //USER_EchoLogStr("Rec:%s;len:%d\n", data, length);
+    USER_EchoLogStr("Rec:%s;len:%d\n", data, length);
     if (strchr((const char *)data, 'N') != NULL)
     {
       _user_uart1_receive_ncode(data);
@@ -144,7 +144,7 @@ __weak void user_uart1_dma_receive_process(unsigned char *data, unsigned short l
       }
     }
 
-    user_send_str(GCODE_TYPE_UART, (char *)data);
+    user_send_uart_cmd((char *)data, length);
   }
 }
 
@@ -167,7 +167,18 @@ void user_uart1_dma_receive_idle(void)
   // 直到当前指令条数为BUFSIZE-1，暂停请求
   if (user_uart_receive.receive_flag) //如果产生了空闲中断
   {
-    user_uart1_dma_receive_process(user_uart_receive.usartDMA_rxBuf, user_uart_receive.rx_len);
+    char *p;
+    p = strtok((char *)user_uart_receive.usartDMA_rxBuf, "\r\n");
+
+    while (p)
+    {
+      printf("%s\n", p);
+      user_uart1_dma_receive_process((unsigned char *)p, strlen(p));
+      p = strtok(NULL, "\r\n");
+    }
+    memset((char *)user_uart_receive.usartDMA_rxBuf, 0 , sizeof(user_uart_receive.usartDMA_rxBuf));
+
+//    user_uart1_dma_receive_process(user_uart_receive.usartDMA_rxBuf, user_uart_receive.rx_len);
     user_uart_receive.receive_flag = 0;
   }
 }
