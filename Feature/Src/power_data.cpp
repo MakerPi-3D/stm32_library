@@ -424,7 +424,6 @@ void feature_pow_data_save_file_path_name(char *path_file_name, char *file_name)
     /*确定选择的打印文件后，将文件名和路径名保存到flash，以便断电续打时调用*/
     strcpy(flash_param_t.pathFileName, path_file_name);
     strcpy(flash_param_t.fileName, file_name);
-    flash_param_t.flag = 1;
   }
 
   #endif
