@@ -230,10 +230,12 @@ static void _feature_pow_data_sync_buf(void)
   #endif
   #elif defined(STM32F407xx)
   static uint32_t set_data_timeout = 0UL;
+  taskENTER_CRITICAL();
   copy_run_status_to_other(&po_save_running_status[2], &po_save_running_status[3]);
   copy_run_status_to_other(&po_save_running_status[1], &po_save_running_status[2]);
   copy_run_status_to_other(&po_save_running_status[0], &po_save_running_status[1]);
   copy_run_status_to_other(&runningStatus[block_buffer_tail], &po_save_running_status[0]);
+  taskEXIT_CRITICAL();
 
   if (set_data_timeout < xTaskGetTickCount())
   {
@@ -248,6 +250,7 @@ static void _feature_pow_data_sync_buf(void)
       }
     }
 
+    taskENTER_CRITICAL();
     flash_poweroff_recovery_t.bedTargetTemp = (int)po_save_running_status[save_index].bed_temp;             /*!< 热床目标温度 */
     flash_poweroff_recovery_t.nozzleTargetTemp = (int)po_save_running_status[save_index].extruder0_temp;    /*!< 喷嘴目标温度 */
     flash_poweroff_recovery_t.fanSpeed = po_save_running_status[save_index].fan_speed;                      /*!< 风扇速度 */
@@ -264,6 +267,7 @@ static void _feature_pow_data_sync_buf(void)
     flash_poweroff_recovery_t.blockflag = t_gui_p.IsNotHaveMatInPrint;                                      /*!< 堵料标志位 */
     flash_poweroff_recovery_t.print_time_save = (long)printControl.getTime();
     flash_poweroff_recovery_t.enable_color_buf = t_sys.enable_color_buf;
+    taskEXIT_CRITICAL();
     set_data_timeout = xTaskGetTickCount() + 10U;
   }
 
